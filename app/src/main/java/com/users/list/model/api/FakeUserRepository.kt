@@ -18,7 +18,15 @@ class FakeUserRepository : UserRepository {
         UserRemoteDto("name6", "avatarUrl"),
         UserRemoteDto("name7", "avatarUrl"),
         UserRemoteDto("name8", "avatarUrl"),
-        UserRemoteDto("name9", "avatarUrl")
+        UserRemoteDto("name9", "avatarUrl"),
+        UserRemoteDto("name10", "avatarUrl"),
+        UserRemoteDto("name11", "avatarUrl"),
+        UserRemoteDto("name12", "avatarUrl"),
+        UserRemoteDto("name13", "avatarUrl"),
+        UserRemoteDto("name14", "avatarUrl"),
+        UserRemoteDto("name15", "avatarUrl"),
+        UserRemoteDto("name16", "avatarUrl"),
+        UserRemoteDto("name17", "avatarUrl")
       )
     ).delay(500, TimeUnit.MILLISECONDS)
   }

@@ -3,10 +3,15 @@ package com.users.list.ui
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.users.R
 import com.users.list.model.domain.UserEntity
+import com.users.list.utils.EMPTY
+import com.users.list.utils.loadImage
+import com.users.list.utils.replace
 
 class UsersAdapter(
   private val loadRepositories: (String) -> Unit
@@ -24,8 +29,7 @@ class UsersAdapter(
     val user = users.find { it.name == userName }
     user?.let {
       val index = users.indexOf(it)
-      users.removeAt(index)
-      users.add(index, it.copy(repositoriesNames = repositories))
+      users.replace(index, it.copy(repositoriesNames = repositories))
       notifyItemChanged(index)
     }
   }
@@ -47,17 +51,21 @@ class UsersAdapter(
   }
 
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    private val nameTextView = itemView.findViewById<TextView>(R.id.user_name)
-    private val imageUrlTextView = itemView.findViewById<TextView>(R.id.user_image)
-    private val repositoriesTextView = itemView.findViewById<TextView>(R.id.user_repositories)
+    private val userNameTextView = itemView.findViewById<TextView>(R.id.user_name_text)
+    private val imageAvatarView = itemView.findViewById<ImageView>(R.id.user_image)
+    private val repositoriesTextView = itemView.findViewById<TextView>(R.id.user_repositories_text)
+    private val repositoriesProgressBar = itemView.findViewById<ProgressBar>(R.id.user_repositories_progress_bar)
 
     fun bind(item: UserEntity) {
-      nameTextView.text = item.name
-      imageUrlTextView.text = item.avatarUrl
+      userNameTextView.text = item.name
+      imageAvatarView.loadImage(item.avatarUrl)
 
+      repositoriesTextView.text = EMPTY
       if (item.repositoriesNames.isEmpty()) {
+        repositoriesProgressBar.visibility = View.VISIBLE
         loadRepositories.invoke(item.name)
       } else {
+        repositoriesProgressBar.visibility = View.GONE
         repositoriesTextView.text = item.repositoriesNames.toString()
       }
     }

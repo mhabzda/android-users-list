@@ -22,10 +22,10 @@ class ListPresenter(
       .observeOn(schedulerProvider.ui())
       .subscribeBy(
         onSuccess = {
-          view.displayUserList(it.take(5))
+          view.displayUserList(it)
         },
         onError = {
-          Log.e("ListActivity", "Error", it)
+          logError(it)
         }
       ))
   }
@@ -35,10 +35,10 @@ class ListPresenter(
       .observeOn(schedulerProvider.ui())
       .subscribeBy(
         onSuccess = { repositories ->
-          view.updateUserListItem(userName, repositories.map { it.name }.take(3))
+          view.updateUserListItem(userName, repositories.map { it.name })
         },
         onError = {
-          Log.e("ListActivity", "Error", it)
+          logError(it)
         }
       )
     )
@@ -46,5 +46,9 @@ class ListPresenter(
 
   override fun releaseResources() {
     compositeDisposable.clear()
+  }
+
+  private fun logError(it: Throwable) {
+    Log.e(ListPresenter::class.simpleName, "Api error", it)
   }
 }

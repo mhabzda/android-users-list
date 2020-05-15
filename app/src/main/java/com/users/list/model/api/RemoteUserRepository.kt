@@ -19,10 +19,15 @@ class RemoteUserRepository : UserRepository {
   private val userApi = retrofit.create(UserApi::class.java)
 
   override fun retrieveUsers(): Single<List<UserRemoteDto>> {
-    return userApi.fetchUsers()
+    return userApi.fetchUsers().map { it.take(USERS_NUMBER) }
   }
 
   override fun retrieveUserRepositories(userLogin: String): Single<List<UserRepositoryRemoteDto>> {
-    return userApi.fetchUserRepository(userLogin)
+    return userApi.fetchUserRepository(userLogin).map { it.take(REPOSITORIES_NUMBER) }
+  }
+
+  companion object {
+    private const val USERS_NUMBER = 8
+    private const val REPOSITORIES_NUMBER = 3
   }
 }
