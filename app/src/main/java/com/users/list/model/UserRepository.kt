@@ -6,5 +6,5 @@ import io.reactivex.Single
 
 interface UserRepository {
   fun retrieveUsers(): Single<List<UserRemoteDto>>
-  fun retrieveUserRepository(userLogin: String): Single<UserRepositoryRemoteDto>
+  fun retrieveUserRepositories(userLogin: String): Single<List<UserRepositoryRemoteDto>>
 }

@@ -22,7 +22,7 @@ class RemoteUserRepository : UserRepository {
     return userApi.fetchUsers()
   }
 
-  override fun retrieveUserRepository(userLogin: String): Single<UserRepositoryRemoteDto> {
+  override fun retrieveUserRepositories(userLogin: String): Single<List<UserRepositoryRemoteDto>> {
     return userApi.fetchUserRepository(userLogin)
   }
 }
