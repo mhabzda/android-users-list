@@ -16,3 +16,7 @@ Fetched data is then mapped and propagated to list adapter.
 I didn't manage orientation change in any way as I think it's not the crucial part of this task
 but if necessary I will probably do it with Android ViewModel to persist data on orientation change somehow.
 I didn't handle errors in the UI properly (dialog, toast) because of time restriction as well.
+
+I load repositories lazily when view is being bound to the list but with only 30 users I could do it at once
+when loading all users. At the end it caused architectures problems for me (with local data) and I needed
+to implement some RxJava operators magic. I would probably changed that but I decided to leave it as it is because of time.
