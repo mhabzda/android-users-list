@@ -1,4 +1,4 @@
-package com.marcin.users
+package com.users
 
 import org.junit.Test
 

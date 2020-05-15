@@ -1,4 +1,4 @@
-package com.marcin.users
+package com.users
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
