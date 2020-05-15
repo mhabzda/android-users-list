@@ -8,8 +8,8 @@ import com.users.R
 import com.users.list.model.api.RemoteUserRepository
 import com.users.list.model.database.LocalUserRepository
 import com.users.list.model.domain.CompositeUserRepository
+import com.users.list.model.domain.UserEntity
 import com.users.list.ui.adapter.UsersAdapter
-import com.users.list.ui.displayable.UserDisplayable
 import com.users.list.ui.schedulers.AndroidSchedulerProvider
 import kotlinx.android.synthetic.main.activity_main.user_search as userSearch
 import kotlinx.android.synthetic.main.activity_main.users_list as usersRecyclerView
@@ -27,7 +27,7 @@ class ListActivity : AppCompatActivity(), ListContract.View {
 
     presenter = ListPresenter(userRepository, schedulerProvider, this)
 
-    usersAdapter = UsersAdapter { presenter.fetchUsersRepositories(it) }
+    usersAdapter = UsersAdapter()
     usersRecyclerView.adapter = usersAdapter
     usersRecyclerView.layoutManager = LinearLayoutManager(this)
     userSearch.setOnQueryTextListener(createOnQueryTextListener())
@@ -40,12 +40,8 @@ class ListActivity : AppCompatActivity(), ListContract.View {
     super.onDestroy()
   }
 
-  override fun displayUserList(users: List<UserDisplayable>) {
-    usersAdapter.updateUsersList(users)
-  }
-
-  override fun updateUserListItem(userName: String, repositories: String) {
-    usersAdapter.updateUser(userName, repositories)
+  override fun displayUserList(users: List<UserEntity>) {
+    usersAdapter.users = users
   }
 
   private fun createOnQueryTextListener(): SearchView.OnQueryTextListener {

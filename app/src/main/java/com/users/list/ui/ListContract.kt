@@ -1,16 +1,14 @@
 package com.users.list.ui
 
-import com.users.list.ui.displayable.UserDisplayable
+import com.users.list.model.domain.UserEntity
 
 interface ListContract {
   interface View {
-    fun displayUserList(users: List<UserDisplayable>)
-    fun updateUserListItem(userName: String, repositories: String)
+    fun displayUserList(users: List<UserEntity>)
   }
 
   interface Presenter {
     fun fetchUsers()
-    fun fetchUsersRepositories(userName: String)
     fun filterUsers(searchQuery: String?)
     fun releaseResources()
   }

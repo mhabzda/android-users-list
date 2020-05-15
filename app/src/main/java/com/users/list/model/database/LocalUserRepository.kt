@@ -5,6 +5,7 @@ import com.users.list.model.database.dtos.UserLocalDto
 import com.users.list.model.database.dtos.UserRepositoryLocalDto
 import com.users.list.model.domain.UserEntity
 import io.reactivex.Maybe
+import io.reactivex.rxkotlin.flatMapIterable
 
 class LocalUserRepository(
   private val application: Application
@@ -14,13 +15,14 @@ class LocalUserRepository(
   private val repositoryDao by lazy { database.repositoryDao() }
 
   fun retrieveUsers(): Maybe<List<UserEntity>> {
-    return userDao.getUsers()
-      .map { users -> users.map { UserEntity(it.login, it.avatarUrl) } }
-  }
-
-  fun retrieveUserRepositories(userName: String): Maybe<List<String>> {
-    return repositoryDao.getRepositories(userName)
-      .map { repos -> repos.map { it.name } }
+    return userDao.getUsers().toObservable()
+      .flatMapIterable()
+      .flatMap(
+        { user -> repositoryDao.getRepositories(user.login).toObservable() },
+        { user, repos -> UserEntity(user.login, user.avatarUrl, repos.map { it.name }) }
+      )
+      .toList()
+      .toMaybe()
   }
 
   fun insertUsers(users: List<UserEntity>) {

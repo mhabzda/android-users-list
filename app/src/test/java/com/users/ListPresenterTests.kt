@@ -7,7 +7,6 @@ import com.users.list.model.domain.UserEntity
 import com.users.list.model.domain.UserRepository
 import com.users.list.ui.ListContract
 import com.users.list.ui.ListPresenter
-import com.users.list.ui.displayable.UserDisplayable
 import com.users.list.ui.schedulers.SchedulerProvider
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -30,27 +29,17 @@ class ListPresenterTests {
   @Test
   fun `given users available when fetch users then display users list`() {
     val presenter = createPresenter(userRepository = mock {
-      on { retrieveUsers() } doReturn Observable.just(listOf(UserEntity("a", "b")))
+      on { retrieveUsers() } doReturn Observable.just(listOf(UserEntity("a", "b", listOf("repo"))))
     })
 
     presenter.fetchUsers()
     testScheduler.triggerActions()
 
-    verify(view).displayUserList(listOf(UserDisplayable("a", "b", "")))
+    verify(view).displayUserList(listOf(UserEntity("a", "b", listOf("repo"))))
   }
 
   @Test
   fun `given users unavailable when fetch users then log error`() {
-
-  }
-
-  @Test
-  fun `given repositories available when fetch users then update list item`() {
-
-  }
-
-  @Test
-  fun `given repositories unavailable when fetch users then log error`() {
 
   }
 
