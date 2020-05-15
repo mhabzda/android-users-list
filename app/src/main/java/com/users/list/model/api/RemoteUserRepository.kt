@@ -28,7 +28,7 @@ class RemoteUserRepository : RemoteRepository {
   }
 
   companion object {
-    private const val USERS_NUMBER = 5
+    private const val USERS_NUMBER = 30
     private const val REPOSITORIES_NUMBER = 3
   }
 }

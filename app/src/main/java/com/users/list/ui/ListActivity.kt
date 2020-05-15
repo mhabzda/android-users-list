@@ -44,7 +44,7 @@ class ListActivity : AppCompatActivity(), ListContract.View {
     usersAdapter.updateUsersList(users)
   }
 
-  override fun updateUserListItem(userName: String, repositories: List<String>) {
+  override fun updateUserListItem(userName: String, repositories: String) {
     usersAdapter.updateUser(userName, repositories)
   }
 
@@ -55,7 +55,7 @@ class ListActivity : AppCompatActivity(), ListContract.View {
       }
 
       override fun onQueryTextChange(newText: String?): Boolean {
-        usersAdapter.filterItems(newText)
+        presenter.filterUsers(newText)
         return false
       }
     }

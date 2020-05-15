@@ -17,26 +17,21 @@ class UsersAdapter(
   private val loadRepositories: (String) -> Unit
 ) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
 
-  private val searchableList = mutableListOf<UserDisplayable>()
-  private var originalUsersList = listOf<UserDisplayable>()
+  private val users = mutableListOf<UserDisplayable>()
 
   fun updateUsersList(newUsers: List<UserDisplayable>) {
-    searchableList.clear()
-    searchableList.addAll(newUsers)
+    users.clear()
+    users.addAll(newUsers)
     notifyDataSetChanged()
-
-    originalUsersList = searchableList.toList()
   }
 
-  fun updateUser(userName: String, repositories: List<String>) {
-    val user = searchableList.find { it.name == userName }
+  fun updateUser(userName: String, repositories: String) {
+    val user = users.find { it.name == userName }
     user?.let {
-      val index = searchableList.indexOf(it)
-      searchableList.replace(index, it.copy(repositoriesNames = repositories))
+      val index = users.indexOf(it)
+      users.replace(index, it.copy(repositoriesNames = repositories))
       notifyItemChanged(index)
     }
-
-    originalUsersList = searchableList.toList()
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -48,11 +43,11 @@ class UsersAdapter(
   }
 
   override fun getItemCount(): Int {
-    return searchableList.size
+    return users.size
   }
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-    holder.bind(searchableList[position])
+    holder.bind(users[position])
   }
 
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -62,6 +57,7 @@ class UsersAdapter(
     private val repositoriesProgressBar = itemView.findViewById<ProgressBar>(R.id.user_repositories_progress_bar)
 
     fun bind(item: UserDisplayable) {
+      imageAvatarView.setImageResource(0)
       userNameTextView.text = item.name
       imageAvatarView.loadImage(item.avatarUrl)
 
@@ -75,19 +71,8 @@ class UsersAdapter(
         loadRepositories.invoke(item.name)
       } else {
         repositoriesProgressBar.visibility = View.GONE
-        repositoriesTextView.text = item.repositoriesNames.toString()
+        repositoriesTextView.text = item.repositoriesNames
       }
     }
-  }
-
-  fun filterItems(searchText: String?) {
-    val text = searchText ?: EMPTY
-    val filteredList = originalUsersList.filter {
-      it.name.contains(text) || it.repositoriesNames.toString().contains(text)
-    }
-
-    searchableList.clear()
-    searchableList.addAll(filteredList)
-    notifyDataSetChanged()
   }
 }
