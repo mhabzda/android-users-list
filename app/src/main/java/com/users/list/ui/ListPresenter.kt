@@ -16,7 +16,18 @@ class ListPresenter(
   private val compositeDisposable = CompositeDisposable()
 
   override fun fetchUsers() {
-    getUsers()
+    compositeDisposable.add(userRepository.retrieveUsers()
+      .subscribeOn(schedulerProvider.io())
+      .map { users -> users.map { UserDisplayable(it.name, it.avatarUrl, EMPTY) } }
+      .observeOn(schedulerProvider.ui())
+      .subscribeBy(
+        onNext = {
+          view.displayUserList(it)
+        },
+        onError = {
+          logError(it)
+        }
+      ))
   }
 
   override fun fetchUsersRepositories(userName: String) {
@@ -35,30 +46,33 @@ class ListPresenter(
   }
 
   override fun filterUsers(searchQuery: String?) {
-    getUsers {
-      val query = searchQuery ?: EMPTY
-      it.name.contains(query) || it.repositoriesNames.contains(query)
-    }
-  }
-
-  override fun releaseResources() {
-    compositeDisposable.clear()
-  }
-
-  private fun getUsers(filterAction: (UserDisplayable) -> Boolean = { true }) {
-    compositeDisposable.add(userRepository.retrieveUsers()
+    compositeDisposable.add(userRepository.retrieveUsersLocally()
       .subscribeOn(schedulerProvider.io())
-      .map { users -> users.map { UserDisplayable(it.name, it.avatarUrl, EMPTY) } }
-      .map { users -> users.filter { filterAction.invoke(it) } }
+      .map { users ->
+        users.map {
+          val (user, repos) = it
+          UserDisplayable(user.name, user.avatarUrl, formatRepositories(repos))
+        }
+      }
+      .map { users -> filterItems(searchQuery, users) }
       .observeOn(schedulerProvider.ui())
       .subscribeBy(
-        onNext = {
+        onSuccess = {
           view.displayUserList(it)
         },
         onError = {
           logError(it)
         }
       ))
+  }
+
+  private fun filterItems(searchQuery: String?, users: List<UserDisplayable>): List<UserDisplayable> {
+    val query = searchQuery ?: EMPTY
+    return users.filter { it.name.contains(query) || it.repositoriesNames.contains(query) }
+  }
+
+  override fun releaseResources() {
+    compositeDisposable.clear()
   }
 
   private fun logError(it: Throwable) {

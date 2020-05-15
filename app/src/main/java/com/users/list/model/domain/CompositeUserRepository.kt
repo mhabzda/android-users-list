@@ -3,6 +3,8 @@ package com.users.list.model.domain
 import com.users.list.model.api.RemoteRepository
 import com.users.list.model.database.LocalUserRepository
 import io.reactivex.Observable
+import io.reactivex.Single
+import io.reactivex.functions.BiFunction
 
 class CompositeUserRepository(
   private val localUserRepository: LocalUserRepository,
@@ -13,6 +15,16 @@ class CompositeUserRepository(
       localUserRepository.retrieveUsers().toObservable(),
       getRemoteUsers()
     ).distinctUntilChanged()
+  }
+
+  override fun retrieveUsersLocally(): Single<List<User>> {
+    return localUserRepository.retrieveUsers().toObservable()
+      .flatMapIterable { it }
+      .flatMap {
+        Observable.zip(Observable.just(it), localUserRepository.retrieveUserRepositories(it.name).toObservable(),
+          BiFunction { user: UserEntity, repos: List<String> -> Pair(user, repos) }
+        )
+      }.toList()
   }
 
   override fun retrieveUserRepositories(userName: String): Observable<List<String>> {
