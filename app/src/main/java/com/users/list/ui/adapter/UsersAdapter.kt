@@ -17,21 +17,26 @@ class UsersAdapter(
   private val loadRepositories: (String) -> Unit
 ) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
 
-  private val users = mutableListOf<UserDisplayable>()
+  private val searchableList = mutableListOf<UserDisplayable>()
+  private var originalUsersList = listOf<UserDisplayable>()
 
   fun updateUsersList(newUsers: List<UserDisplayable>) {
-    users.clear()
-    users.addAll(newUsers)
+    searchableList.clear()
+    searchableList.addAll(newUsers)
     notifyDataSetChanged()
+
+    originalUsersList = searchableList.toList()
   }
 
   fun updateUser(userName: String, repositories: List<String>) {
-    val user = users.find { it.name == userName }
+    val user = searchableList.find { it.name == userName }
     user?.let {
-      val index = users.indexOf(it)
-      users.replace(index, it.copy(repositoriesNames = repositories))
+      val index = searchableList.indexOf(it)
+      searchableList.replace(index, it.copy(repositoriesNames = repositories))
       notifyItemChanged(index)
     }
+
+    originalUsersList = searchableList.toList()
   }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -43,11 +48,11 @@ class UsersAdapter(
   }
 
   override fun getItemCount(): Int {
-    return users.size
+    return searchableList.size
   }
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-    holder.bind(users[position])
+    holder.bind(searchableList[position])
   }
 
   inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -73,5 +78,16 @@ class UsersAdapter(
         repositoriesTextView.text = item.repositoriesNames.toString()
       }
     }
+  }
+
+  fun filterItems(searchText: String?) {
+    val text = searchText ?: EMPTY
+    val filteredList = originalUsersList.filter {
+      it.name.contains(text) || it.repositoriesNames.toString().contains(text)
+    }
+
+    searchableList.clear()
+    searchableList.addAll(filteredList)
+    notifyDataSetChanged()
   }
 }

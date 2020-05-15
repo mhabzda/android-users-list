@@ -2,6 +2,7 @@ package com.users.list.ui
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.users.R
 import com.users.list.model.api.fake.FakeUserRepository
@@ -10,6 +11,7 @@ import com.users.list.model.domain.CompositeUserRepository
 import com.users.list.ui.adapter.UsersAdapter
 import com.users.list.ui.displayable.UserDisplayable
 import com.users.list.ui.schedulers.AndroidSchedulerProvider
+import kotlinx.android.synthetic.main.activity_main.user_search as userSearch
 import kotlinx.android.synthetic.main.activity_main.users_list as usersRecyclerView
 
 class ListActivity : AppCompatActivity(), ListContract.View {
@@ -28,6 +30,7 @@ class ListActivity : AppCompatActivity(), ListContract.View {
     usersAdapter = UsersAdapter { presenter.fetchUsersRepositories(it) }
     usersRecyclerView.adapter = usersAdapter
     usersRecyclerView.layoutManager = LinearLayoutManager(this)
+    userSearch.setOnQueryTextListener(createOnQueryTextListener())
 
     presenter.fetchUsers()
   }
@@ -43,5 +46,18 @@ class ListActivity : AppCompatActivity(), ListContract.View {
 
   override fun updateUserListItem(userName: String, repositories: List<String>) {
     usersAdapter.updateUser(userName, repositories)
+  }
+
+  private fun createOnQueryTextListener(): SearchView.OnQueryTextListener {
+    return object : SearchView.OnQueryTextListener {
+      override fun onQueryTextSubmit(query: String?): Boolean {
+        return false
+      }
+
+      override fun onQueryTextChange(newText: String?): Boolean {
+        usersAdapter.filterItems(newText)
+        return false
+      }
+    }
   }
 }
