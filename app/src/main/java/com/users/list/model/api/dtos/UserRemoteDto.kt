@@ -1,10 +1,10 @@
-package com.users.list.model.api.entities
+package com.users.list.model.api.dtos
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class UserEntity(
+data class UserRemoteDto(
   @Json(name = "login")
   val login: String,
 

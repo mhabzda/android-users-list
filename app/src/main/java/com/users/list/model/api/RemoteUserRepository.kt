@@ -1,8 +1,8 @@
 package com.users.list.model.api
 
 import com.users.list.model.UserRepository
-import com.users.list.model.api.entities.UserEntity
-import com.users.list.model.api.entities.UserRepositoryEntity
+import com.users.list.model.api.dtos.UserRemoteDto
+import com.users.list.model.api.dtos.UserRepositoryRemoteDto
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import retrofit2.Retrofit
@@ -18,11 +18,11 @@ class RemoteUserRepository : UserRepository {
 
   private val userApi = retrofit.create(UserApi::class.java)
 
-  override fun retrieveUsers(): Single<List<UserEntity>> {
+  override fun retrieveUsers(): Single<List<UserRemoteDto>> {
     return userApi.fetchUsers()
   }
 
-  override fun retrieveUserRepository(userLogin: String): Single<UserRepositoryEntity> {
+  override fun retrieveUserRepository(userLogin: String): Single<UserRepositoryRemoteDto> {
     return userApi.fetchUserRepository(userLogin)
   }
 }
