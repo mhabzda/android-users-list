@@ -8,7 +8,7 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.users.R
-import com.users.list.model.domain.UserEntity
+import com.users.list.ui.displayable.UserDisplayable
 import com.users.list.utils.EMPTY
 import com.users.list.utils.loadImage
 import com.users.list.utils.replace
@@ -17,9 +17,9 @@ class UsersAdapter(
   private val loadRepositories: (String) -> Unit
 ) : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
 
-  private val users = mutableListOf<UserEntity>()
+  private val users = mutableListOf<UserDisplayable>()
 
-  fun updateUsersList(newUsers: List<UserEntity>) {
+  fun updateUsersList(newUsers: List<UserDisplayable>) {
     users.clear()
     users.addAll(newUsers)
     notifyDataSetChanged()
@@ -56,7 +56,7 @@ class UsersAdapter(
     private val repositoriesTextView = itemView.findViewById<TextView>(R.id.user_repositories_text)
     private val repositoriesProgressBar = itemView.findViewById<ProgressBar>(R.id.user_repositories_progress_bar)
 
-    fun bind(item: UserEntity) {
+    fun bind(item: UserDisplayable) {
       userNameTextView.text = item.name
       imageAvatarView.loadImage(item.avatarUrl)
 

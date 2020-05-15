@@ -1,8 +1,8 @@
 package com.users.list.ui
 
 import android.util.Log
-import com.users.list.model.UserRepository
-import com.users.list.model.domain.UserEntity
+import com.users.list.model.domain.UserRepository
+import com.users.list.ui.displayable.UserDisplayable
 import com.users.list.ui.schedulers.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
@@ -16,12 +16,11 @@ class ListPresenter(
 
   override fun fetchUsers() {
     compositeDisposable.add(userRepository.retrieveUsers()
-      .map { users ->
-        users.map { UserEntity(it.login, it.avatarUrl, emptyList()) }
-      }
+      .subscribeOn(schedulerProvider.io())
+      .map { users -> users.map { UserDisplayable(it.name, it.avatarUrl, emptyList()) } }
       .observeOn(schedulerProvider.ui())
       .subscribeBy(
-        onSuccess = {
+        onNext = {
           view.displayUserList(it)
         },
         onError = {
@@ -32,10 +31,11 @@ class ListPresenter(
 
   override fun fetchUsersRepositories(userName: String) {
     compositeDisposable.add(userRepository.retrieveUserRepositories(userName)
+      .subscribeOn(schedulerProvider.io())
       .observeOn(schedulerProvider.ui())
       .subscribeBy(
-        onSuccess = { repositories ->
-          view.updateUserListItem(userName, repositories.map { it.name })
+        onNext = { repositories ->
+          view.updateUserListItem(userName, repositories)
         },
         onError = {
           logError(it)
