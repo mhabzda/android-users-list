@@ -7,6 +7,7 @@ import com.users.R
 import com.users.list.model.api.fake.FakeUserRepository
 import com.users.list.model.database.LocalUserRepository
 import com.users.list.model.domain.CompositeUserRepository
+import com.users.list.ui.adapter.UsersAdapter
 import com.users.list.ui.displayable.UserDisplayable
 import com.users.list.ui.schedulers.AndroidSchedulerProvider
 import kotlinx.android.synthetic.main.activity_main.users_list as usersRecyclerView
