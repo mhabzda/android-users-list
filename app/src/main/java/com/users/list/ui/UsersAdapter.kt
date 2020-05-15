@@ -60,6 +60,10 @@ class UsersAdapter(
       userNameTextView.text = item.name
       imageAvatarView.loadImage(item.avatarUrl)
 
+      bindRepositories(item)
+    }
+
+    private fun bindRepositories(item: UserDisplayable) {
       repositoriesTextView.text = EMPTY
       if (item.repositoriesNames.isEmpty()) {
         repositoriesProgressBar.visibility = View.VISIBLE

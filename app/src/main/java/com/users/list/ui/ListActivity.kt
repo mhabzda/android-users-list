@@ -4,7 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.users.R
-import com.users.list.model.api.RemoteUserRepository
+import com.users.list.model.api.fake.FakeUserRepository
 import com.users.list.model.database.LocalUserRepository
 import com.users.list.model.domain.CompositeUserRepository
 import com.users.list.ui.displayable.UserDisplayable
@@ -19,7 +19,7 @@ class ListActivity : AppCompatActivity(), ListContract.View {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
 
-    val userRepository = CompositeUserRepository(LocalUserRepository(application), RemoteUserRepository())
+    val userRepository = CompositeUserRepository(LocalUserRepository(application), FakeUserRepository())
     val schedulerProvider = AndroidSchedulerProvider()
 
     presenter = ListPresenter(userRepository, schedulerProvider, this)

@@ -1,13 +1,13 @@
-package com.users.list.model.fake
+package com.users.list.model.api.fake
 
+import com.users.list.model.api.RemoteRepository
 import com.users.list.model.domain.UserEntity
-import com.users.list.model.domain.UserRepository
-import io.reactivex.Observable
+import io.reactivex.Single
 import java.util.concurrent.TimeUnit
 
-class FakeUserRepository : UserRepository {
-  override fun retrieveUsers(): Observable<List<UserEntity>> {
-    return Observable.just(
+class FakeUserRepository : RemoteRepository {
+  override fun retrieveUsers(): Single<List<UserEntity>> {
+    return Single.just(
       listOf(
         UserEntity("name1", "avatarUrl"),
         UserEntity("name2", "avatarUrl"),
@@ -30,8 +30,8 @@ class FakeUserRepository : UserRepository {
     ).delay(500, TimeUnit.MILLISECONDS)
   }
 
-  override fun retrieveUserRepositories(userName: String): Observable<List<String>> {
-    return Observable.just(
+  override fun retrieveUserRepositories(userName: String): Single<List<String>> {
+    return Single.just(
       listOf(
         "repo1",
         "repo2",
