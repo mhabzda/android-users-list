@@ -10,6 +10,6 @@ interface UserApi {
   @GET("users")
   fun fetchUsers(): Single<List<UserRemoteDto>>
 
-  @GET("{userLogin}/repos")
+  @GET("users/{userLogin}/repos")
   fun fetchUserRepository(@Path("userLogin") userLogin: String): Single<List<UserRepositoryRemoteDto>>
 }
