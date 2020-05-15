@@ -43,7 +43,7 @@ class ListPresenterTests {
 
   }
 
-  // all logic inside presenter we can be easily tested. I'm not doing that because I don't have enough time.
+  // all logic inside presenter can be easily tested. I'm not doing that because I don't have enough time.
   // some operations like filtering or mapping can be even extracted
   // to separate classes (like mappers) and tested separately
 
