@@ -1,18 +1,18 @@
 package com.users.list.model.database
 
-import android.app.Application
+import com.users.list.model.database.dao.RepositoryDao
+import com.users.list.model.database.dao.UserDao
 import com.users.list.model.database.dtos.UserLocalDto
 import com.users.list.model.database.dtos.UserRepositoryLocalDto
 import com.users.list.model.domain.UserEntity
 import io.reactivex.Maybe
 import io.reactivex.rxkotlin.flatMapIterable
+import javax.inject.Inject
 
-class LocalUserRepository(
-  private val application: Application
+class LocalUserRepository @Inject constructor(
+  private val userDao: UserDao,
+  private val repositoryDao: RepositoryDao
 ) {
-  private val database by lazy { UserDatabase(application) }
-  private val userDao by lazy { database.userDao() }
-  private val repositoryDao by lazy { database.repositoryDao() }
 
   fun retrieveUsers(): Maybe<List<UserEntity>> {
     return userDao.getUsers().toObservable()
