@@ -4,8 +4,9 @@ import com.users.list.model.api.RemoteRepository
 import com.users.list.model.database.LocalUserRepository
 import io.reactivex.Maybe
 import io.reactivex.Observable
+import javax.inject.Inject
 
-class CompositeUserRepository(
+class CompositeUserRepository @Inject constructor(
   private val localUserRepository: LocalUserRepository,
   private val remoteUserRepository: RemoteRepository
 ) : UserRepository {

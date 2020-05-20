@@ -6,20 +6,11 @@ import com.users.list.model.domain.UserEntity
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.rxkotlin.flatMapIterable
-import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
+import javax.inject.Inject
 
-class RemoteUserRepository : RemoteRepository {
-  private val retrofit = Retrofit.Builder()
-    .baseUrl("https://api.github.com")
-    .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-    .addConverterFactory(MoshiConverterFactory.create())
-    .build()
-
-  private val userApi = retrofit.create(UserApi::class.java)
-
+class RemoteUserRepository @Inject constructor(
+  private val userApi: UserApi
+) : RemoteRepository {
   override fun retrieveUsers(): Single<List<UserEntity>> {
     return userApi.fetchUsers().map { it.take(USERS_NUMBER) }.toObservable()
       .flatMapIterable()

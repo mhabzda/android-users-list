@@ -4,8 +4,9 @@ import com.users.list.model.api.RemoteRepository
 import com.users.list.model.domain.UserEntity
 import io.reactivex.Single
 import java.util.concurrent.TimeUnit
+import javax.inject.Inject
 
-class FakeUserRepository : RemoteRepository {
+class FakeUserRepository @Inject constructor() : RemoteRepository {
   override fun retrieveUsers(): Single<List<UserEntity>> {
     return Single.just(
       listOf(

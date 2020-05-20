@@ -7,8 +7,9 @@ import com.users.list.ui.schedulers.SchedulerProvider
 import com.users.list.utils.EMPTY
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
+import javax.inject.Inject
 
-class ListPresenter(
+class ListPresenter @Inject constructor(
   private val userRepository: UserRepository,
   private val schedulerProvider: SchedulerProvider,
   private val view: ListContract.View
