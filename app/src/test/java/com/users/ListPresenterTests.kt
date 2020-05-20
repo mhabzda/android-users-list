@@ -7,7 +7,6 @@ import com.users.list.model.domain.UserEntity
 import com.users.list.model.domain.UserRepository
 import com.users.list.ui.ListContract
 import com.users.list.ui.ListPresenter
-import com.users.list.ui.displayable.UserDisplayable
 import com.users.list.ui.schedulers.SchedulerProvider
 import io.reactivex.Observable
 import io.reactivex.Scheduler
@@ -30,13 +29,13 @@ class ListPresenterTests {
   @Test
   fun `given users available when fetch users then display users list`() {
     val presenter = createPresenter(userRepository = mock {
-      on { retrieveUsers() } doReturn Observable.just(listOf(UserEntity("a", "b")))
+      on { retrieveUsers() } doReturn Observable.just(listOf(UserEntity("a", "b", listOf("repo"))))
     })
 
     presenter.fetchUsers()
     testScheduler.triggerActions()
 
-    verify(view).displayUserList(listOf(UserDisplayable("a", "b", "")))
+    verify(view).displayUserList(listOf(UserEntity("a", "b", listOf("repo"))))
   }
 
   @Test
@@ -44,17 +43,7 @@ class ListPresenterTests {
 
   }
 
-  @Test
-  fun `given repositories available when fetch users then update list item`() {
-
-  }
-
-  @Test
-  fun `given repositories unavailable when fetch users then log error`() {
-
-  }
-
-  // all logic inside presenter we can be easily tested. I'm not doing that because I don't have enough time.
+  // all logic inside presenter can be easily tested. I'm not doing that because I don't have enough time.
   // some operations like filtering or mapping can be even extracted
   // to separate classes (like mappers) and tested separately
 

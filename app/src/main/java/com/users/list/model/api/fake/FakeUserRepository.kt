@@ -9,35 +9,24 @@ class FakeUserRepository : RemoteRepository {
   override fun retrieveUsers(): Single<List<UserEntity>> {
     return Single.just(
       listOf(
-        UserEntity("name1", "avatarUrl"),
-        UserEntity("name2", "avatarUrl"),
-        UserEntity("name3", "avatarUrl"),
-        UserEntity("name4", "avatarUrl"),
-        UserEntity("name5", "avatarUrl"),
-        UserEntity("name6", "avatarUrl"),
-        UserEntity("name7", "avatarUrl"),
-        UserEntity("name8", "avatarUrl"),
-        UserEntity("name9", "avatarUrl"),
-        UserEntity("name10", "avatarUrl"),
-        UserEntity("name11", "avatarUrl"),
-        UserEntity("name12", "avatarUrl"),
-        UserEntity("name13", "avatarUrl"),
-        UserEntity("name14", "avatarUrl"),
-        UserEntity("name15", "avatarUrl"),
-        UserEntity("name16", "avatarUrl"),
-        UserEntity("name17", "avatarUrl")
+        UserEntity("name1", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name2", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name3", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name4", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name5", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name6", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name7", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name8", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name9", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name10", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name11", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name12", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name13", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name14", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name15", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name16", "avatarUrl", listOf("repo1", "repo2", "repo3")),
+        UserEntity("name17", "avatarUrl", listOf("repo1", "repo2", "repo3"))
       )
     ).delay(500, TimeUnit.MILLISECONDS)
   }
-
-  override fun retrieveUserRepositories(userName: String): Single<List<String>> {
-    return Single.just(
-      listOf(
-        "repo1",
-        "repo2",
-        "repo3"
-      )
-    ).delay(300, TimeUnit.MILLISECONDS)
-  }
-
 }

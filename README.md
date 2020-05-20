@@ -1,4 +1,4 @@
-# Users-List
+# android-users-List
 
 Firstly, I didn't manage to finish implementing unit tests. I didn't have enough time.
 
@@ -22,5 +22,5 @@ when loading all users. At the end it caused architectures problems for me (with
 to implement some RxJava operators magic. I would probably changed that but I decided to leave it as it is because of time.
 
 # Additional note
-This solution doesn't work well with remote data. I wanted to fetch repositories in view holder bind method
-which is not a good idea. I fixed it in separate 'develop' branch but I did it after available time. It works much better there.
+A first solution doesn't work well with remote data. I wanted to fetch repositories in view holder bind method which is not a good idea.
+I fixed it but I did it after available time. App works better after these changes.

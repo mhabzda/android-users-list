@@ -5,5 +5,4 @@ import io.reactivex.Single
 
 interface RemoteRepository {
   fun retrieveUsers(): Single<List<UserEntity>>
-  fun retrieveUserRepositories(userName: String): Single<List<String>>
 }
