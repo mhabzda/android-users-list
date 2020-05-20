@@ -1,4 +1,4 @@
-# Users-List
+# android-users-List
 
 Firstly, I didn't manage to finish implementing unit tests. I didn't have enough time.
 
@@ -20,3 +20,7 @@ I didn't handle errors in the UI properly (dialog, toast) because of time restri
 I load repositories lazily when view is being bound to the list but with only 30 users I could do it at once
 when loading all users. At the end it caused architectures problems for me (with local data) and I needed
 to implement some RxJava operators magic. I would probably changed that but I decided to leave it as it is because of time.
+
+# Additional note
+A first solution doesn't work well with remote data. I wanted to fetch repositories in view holder bind method which is not a good idea.
+I fixed it but I did it after available time. App works better after these changes.
