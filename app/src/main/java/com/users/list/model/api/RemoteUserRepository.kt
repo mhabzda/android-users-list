@@ -12,11 +12,13 @@ class RemoteUserRepository @Inject constructor(
   private val userApi: UserApi
 ) : RemoteRepository {
   override fun retrieveUsers(): Single<List<UserEntity>> {
-    return userApi.fetchUsers().map { it.take(USERS_NUMBER) }.toObservable()
+    return userApi.fetchUsers()
+      .map { it.take(USERS_NUMBER) }
+      .toObservable()
       .flatMapIterable()
       .flatMap(
         { fetchRepositories(it) },
-        { users, repos -> UserEntity(users.login, users.avatarUrl, repos.map { it.name }) }
+        { user, repos -> UserEntity(user.login, user.avatarUrl, repos.map { it.name }) }
       )
       .toList()
   }

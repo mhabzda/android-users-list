@@ -6,7 +6,6 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.users.list.model.database.dtos.UserRepositoryLocalDto
 import io.reactivex.Maybe
-import io.reactivex.Single
 
 @Dao
 interface RepositoryDao {

@@ -5,7 +5,7 @@ import com.users.list.model.database.dao.UserDao
 import com.users.list.model.database.dtos.UserLocalDto
 import com.users.list.model.database.dtos.UserRepositoryLocalDto
 import com.users.list.model.domain.UserEntity
-import io.reactivex.Maybe
+import io.reactivex.Single
 import io.reactivex.rxkotlin.flatMapIterable
 import javax.inject.Inject
 
@@ -14,7 +14,7 @@ class LocalUserRepository @Inject constructor(
   private val repositoryDao: RepositoryDao
 ) {
 
-  fun retrieveUsers(): Maybe<List<UserEntity>> {
+  fun retrieveUsers(): Single<List<UserEntity>> {
     return userDao.getUsers().toObservable()
       .flatMapIterable()
       .flatMap(
@@ -22,7 +22,6 @@ class LocalUserRepository @Inject constructor(
         { user, repos -> UserEntity(user.login, user.avatarUrl, repos.map { it.name }) }
       )
       .toList()
-      .toMaybe()
   }
 
   fun insertUsers(users: List<UserEntity>) {

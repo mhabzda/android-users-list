@@ -19,7 +19,7 @@ class ListPresenter @Inject constructor(
   override fun fetchUsers() {
     compositeDisposable.add(userRepository.retrieveUsers()
       .subscribeOn(schedulerProvider.io())
-      .observeOn(schedulerProvider.ui())
+      .observeOn(schedulerProvider.ui(), true)
       .subscribeBy(
         onNext = {
           view.displayUserList(it)
@@ -54,7 +54,7 @@ class ListPresenter @Inject constructor(
     compositeDisposable.clear()
   }
 
-  private fun logError(it: Throwable) {
-    Log.e(ListPresenter::class.simpleName, "Api error", it)
+  private fun logError(throwable: Throwable) {
+    Log.e(ListPresenter::class.simpleName, "Error - ${throwable.message}", throwable)
   }
 }
