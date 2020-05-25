@@ -1,14 +1,15 @@
 package com.users.list.ui
 
 import android.os.Bundle
+import android.view.Menu
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.users.R
 import com.users.list.model.domain.UserEntity
 import com.users.list.ui.adapter.UsersAdapter
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.activity_main.user_search as userSearch
 import kotlinx.android.synthetic.main.activity_main.users_list as usersRecyclerView
 
 class ListActivity : DaggerAppCompatActivity(), ListContract.View {
@@ -24,7 +25,7 @@ class ListActivity : DaggerAppCompatActivity(), ListContract.View {
     usersAdapter = UsersAdapter()
     usersRecyclerView.adapter = usersAdapter
     usersRecyclerView.layoutManager = LinearLayoutManager(this)
-    userSearch.setOnQueryTextListener(createOnQueryTextListener())
+    usersRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
 
     presenter.fetchUsers()
   }
@@ -32,6 +33,15 @@ class ListActivity : DaggerAppCompatActivity(), ListContract.View {
   override fun onDestroy() {
     presenter.releaseResources()
     super.onDestroy()
+  }
+
+  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menuInflater.inflate(R.menu.search_menu, menu)
+
+    val searchView = menu?.findItem(R.id.action_search)?.actionView as SearchView
+    searchView.setOnQueryTextListener(createOnQueryTextListener())
+
+    return super.onCreateOptionsMenu(menu)
   }
 
   override fun displayUserList(users: List<UserEntity>) {

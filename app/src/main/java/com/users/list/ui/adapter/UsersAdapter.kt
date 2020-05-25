@@ -41,7 +41,7 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
     fun bind(item: UserEntity) {
       userNameTextView.text = item.name
       imageAvatarView.loadImage(item.avatarUrl)
-      repositoriesTextView.text = item.repositories.toString()
+      repositoriesTextView.text = item.repositories.joinToString()
     }
   }
 }

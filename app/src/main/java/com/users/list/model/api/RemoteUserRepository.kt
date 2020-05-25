@@ -1,5 +1,6 @@
 package com.users.list.model.api
 
+import android.util.Log
 import com.users.list.model.api.dtos.UserRemoteDto
 import com.users.list.model.api.dtos.UserRepositoryRemoteDto
 import com.users.list.model.domain.UserEntity
@@ -26,6 +27,7 @@ class RemoteUserRepository @Inject constructor(
   private fun fetchRepositories(user: UserRemoteDto): Observable<List<UserRepositoryRemoteDto>> {
     return userApi.fetchUserRepository(user.login)
       .map { it.take(REPOSITORIES_NUMBER) }
+      .doOnError { Log.e(this::class.simpleName, "Cannot fetch repositories - ${it.message}", it) }
       .onErrorReturn { emptyList() }
       .toObservable()
   }
