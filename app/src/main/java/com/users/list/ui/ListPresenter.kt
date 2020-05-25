@@ -20,6 +20,8 @@ class ListPresenter @Inject constructor(
     compositeDisposable.add(userRepository.retrieveUsers()
       .subscribeOn(schedulerProvider.io())
       .observeOn(schedulerProvider.ui(), true)
+      .doOnSubscribe { view.toggleRefreshing(isRefreshing = true) }
+      .doOnTerminate { view.toggleRefreshing(isRefreshing = false) }
       .subscribeBy(
         onNext = {
           view.displayUserList(it)

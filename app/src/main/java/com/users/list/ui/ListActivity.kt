@@ -8,26 +8,37 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.users.R
 import com.users.list.model.domain.UserEntity
 import com.users.list.ui.adapter.UsersAdapter
+import com.users.list.utils.EMPTY
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.activity_main.users_list as usersRecyclerView
+import kotlinx.android.synthetic.main.activity_list.swipe_refresh as swipeRefresh
+import kotlinx.android.synthetic.main.activity_list.users_list as usersRecyclerView
 
 class ListActivity : DaggerAppCompatActivity(), ListContract.View {
   @Inject
   lateinit var presenter: ListContract.Presenter
 
   private lateinit var usersAdapter: UsersAdapter
+  private lateinit var searchView: SearchView
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    setContentView(R.layout.activity_list)
 
+    initializeRecyclerView()
+    swipeRefresh.setOnRefreshListener {
+      presenter.fetchUsers()
+      searchView.setQuery(EMPTY, false)
+    }
+
+    presenter.fetchUsers()
+  }
+
+  private fun initializeRecyclerView() {
     usersAdapter = UsersAdapter()
     usersRecyclerView.adapter = usersAdapter
     usersRecyclerView.layoutManager = LinearLayoutManager(this)
     usersRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-
-    presenter.fetchUsers()
   }
 
   override fun onDestroy() {
@@ -38,7 +49,7 @@ class ListActivity : DaggerAppCompatActivity(), ListContract.View {
   override fun onCreateOptionsMenu(menu: Menu?): Boolean {
     menuInflater.inflate(R.menu.search_menu, menu)
 
-    val searchView = menu?.findItem(R.id.action_search)?.actionView as SearchView
+    searchView = menu?.findItem(R.id.action_search)?.actionView as SearchView
     searchView.setOnQueryTextListener(createOnQueryTextListener())
 
     return super.onCreateOptionsMenu(menu)
@@ -46,6 +57,10 @@ class ListActivity : DaggerAppCompatActivity(), ListContract.View {
 
   override fun displayUserList(users: List<UserEntity>) {
     usersAdapter.users = users
+  }
+
+  override fun toggleRefreshing(isRefreshing: Boolean) {
+    swipeRefresh.isRefreshing = isRefreshing
   }
 
   private fun createOnQueryTextListener(): SearchView.OnQueryTextListener {
