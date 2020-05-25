@@ -2,6 +2,7 @@ package com.users.list.ui
 
 import android.os.Bundle
 import android.view.Menu
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,6 +62,10 @@ class ListActivity : DaggerAppCompatActivity(), ListContract.View {
 
   override fun toggleRefreshing(isRefreshing: Boolean) {
     swipeRefresh.isRefreshing = isRefreshing
+  }
+
+  override fun displayError(errorMessage: String) {
+    Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
   }
 
   private fun createOnQueryTextListener(): SearchView.OnQueryTextListener {

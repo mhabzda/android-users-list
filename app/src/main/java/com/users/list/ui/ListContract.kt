@@ -6,6 +6,7 @@ interface ListContract {
   interface View {
     fun displayUserList(users: List<UserEntity>)
     fun toggleRefreshing(isRefreshing: Boolean)
+    fun displayError(errorMessage: String)
   }
 
   interface Presenter {

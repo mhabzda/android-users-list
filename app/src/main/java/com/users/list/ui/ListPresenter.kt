@@ -27,6 +27,7 @@ class ListPresenter @Inject constructor(
           view.displayUserList(it)
         },
         onError = {
+          view.displayError(it.message ?: EMPTY)
           logError(it)
         }
       ))
@@ -42,6 +43,7 @@ class ListPresenter @Inject constructor(
           view.displayUserList(it)
         },
         onError = {
+          view.displayError(it.message ?: EMPTY)
           logError(it)
         }
       ))
