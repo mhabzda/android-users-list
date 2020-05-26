@@ -10,8 +10,8 @@
 
   <ImageView
     android:id="@+id/user_image"
-    android:layout_width="100dp"
-    android:layout_height="100dp"
+    android:layout_width="@dimen/user_image_size"
+    android:layout_height="@dimen/user_image_size"
     android:src="@color/colorAccent"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
@@ -24,7 +24,9 @@
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:gravity="center"
-    android:textSize="18sp"
+    android:paddingStart="@dimen/default_padding"
+    android:paddingEnd="@dimen/default_padding"
+    android:textSize="@dimen/bigger_text"
     app:layout_constraintBottom_toTopOf="@id/user_repositories_text"
     app:layout_constraintLeft_toRightOf="@id/user_image"
     app:layout_constraintRight_toRightOf="parent"
@@ -37,12 +39,14 @@
     android:layout_width="0dp"
     android:layout_height="0dp"
     android:gravity="center"
-    android:textSize="16sp"
+    android:paddingStart="@dimen/default_padding"
+    android:paddingEnd="@dimen/default_padding"
+    android:textSize="@dimen/regular_text"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintLeft_toRightOf="@id/user_image"
     app:layout_constraintRight_toRightOf="parent"
     app:layout_constraintTop_toBottomOf="@id/user_name_text"
-    tools:text="android-list, ios-app"
+    tools:text="android-list, ios-app, very_long_project"
     />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
