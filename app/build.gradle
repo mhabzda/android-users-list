@@ -9,6 +9,15 @@ android {
   compileSdkVersion 29
   buildToolsVersion "29.0.3"
 
+  compileOptions {
+    sourceCompatibility JavaVersion.VERSION_1_8
+    targetCompatibility JavaVersion.VERSION_1_8
+  }
+
+  kotlinOptions {
+    jvmTarget = JavaVersion.VERSION_1_8.toString()
+  }
+
   defaultConfig {
     applicationId "com.users"
     minSdkVersion 21
@@ -19,13 +28,16 @@ android {
     testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
   }
 
+  defaultConfig {
+    buildConfigField("String", "GITHUB_TOKEN", getGithubToken("$rootDir/github_token.txt"))
+  }
+
   buildTypes {
     release {
       minifyEnabled false
       proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
     }
   }
-
 }
 
 dependencies {
@@ -67,4 +79,15 @@ dependencies {
 
   androidTestImplementation 'androidx.test.ext:junit:1.1.1'
   androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+}
+
+static String getGithubToken(String filePath) {
+  File file = new File(filePath)
+  String token
+  if (file.exists()) {
+    token = "\"${file.text}\""
+  } else {
+    token = "\"\""
+  }
+  return token
 }
