@@ -6,10 +6,10 @@ import com.users.list.model.api.mapper.UserRemoteMapper
 import com.users.list.model.domain.UserEntity
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.exceptions.CompositeException
+import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.flatMapIterable
 import javax.inject.Inject
-
-typealias RepositoriesListResult = Result<List<UserRepositoryRemoteDto>>
 
 class RemoteUserRepository @Inject constructor(
   private val userApi: UserApi,
@@ -20,26 +20,29 @@ class RemoteUserRepository @Inject constructor(
       .map { it.take(USERS_NUMBER) }
       .toObservable()
       .flatMapIterable()
-      .flatMap(this::fetchRepositories, mergeUserWithRepositories())
+      .flatMap(this::mergeUserWithRepositories, true)
+      .flattenCompositeException()
       .toList()
-      .map { userList -> userList.map { user -> user.getOrThrow() } }
   }
 
-  private fun fetchRepositories(user: UserRemoteDto): Observable<RepositoriesListResult> {
+  private fun mergeUserWithRepositories(userRemoteDto: UserRemoteDto): Observable<UserEntity> {
+    return Observable.zip(
+      Observable.just(userRemoteDto),
+      fetchRepositories(userRemoteDto),
+      BiFunction { user, repositories -> userRemoteMapper.map(user, repositories) }
+    )
+  }
+
+  private fun fetchRepositories(user: UserRemoteDto): Observable<List<UserRepositoryRemoteDto>> {
     return userApi.fetchUserRepository(user.login)
-      .map { Result.success(it.take(REPOSITORIES_NUMBER)) }
-      .onErrorReturn { Result.failure(it) }
+      .map { it.take(REPOSITORIES_NUMBER) }
       .toObservable()
   }
 
-  private fun mergeUserWithRepositories(): (UserRemoteDto, RepositoriesListResult) -> Result<UserEntity> {
-    return { user, repositoriesResult ->
-      val exception = repositoriesResult.exceptionOrNull()
-      if (exception == null) {
-        Result.success(userRemoteMapper.map(user, repositoriesResult.getOrThrow()))
-      } else {
-        Result.failure(exception)
-      }
+  private fun <T> Observable<T>.flattenCompositeException(): Observable<T> {
+    return onErrorResumeNext { originalError: Throwable ->
+      val resultError = if (originalError is CompositeException) originalError.exceptions.first() else originalError
+      Observable.error(resultError)
     }
   }
 
