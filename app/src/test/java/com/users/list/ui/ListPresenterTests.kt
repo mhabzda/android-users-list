@@ -1,12 +1,10 @@
-package com.users
+package com.users.list.ui
 
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.users.list.model.domain.UserEntity
 import com.users.list.model.domain.UserRepository
-import com.users.list.ui.ListContract
-import com.users.list.ui.ListPresenter
 import com.users.list.ui.schedulers.SchedulerProvider
 import io.reactivex.Observable
 import io.reactivex.Scheduler
