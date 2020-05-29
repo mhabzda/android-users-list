@@ -10,7 +10,7 @@ import com.users.list.model.api.mapper.UserRemoteMapper
 import com.users.list.model.domain.UserEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.TestScheduler
-import org.junit.Test
+import org.junit.jupiter.api.Test
 import java.util.concurrent.TimeUnit
 
 class RemoteUserRepositoryTest {

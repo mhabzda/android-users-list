@@ -1,58 +1,131 @@
 package com.users.list.ui
 
+import com.nhaarman.mockitokotlin2.InOrderOnType
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.clearInvocations
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.users.list.model.domain.UserEntity
 import com.users.list.model.domain.UserRepository
-import com.users.list.ui.schedulers.SchedulerProvider
+import com.users.list.ui.filter.ListItemsFilter
 import io.reactivex.Observable
-import io.reactivex.Scheduler
-import io.reactivex.schedulers.TestScheduler
-import org.junit.Test
+import io.reactivex.Single
+import io.reactivex.subjects.PublishSubject
+import org.junit.jupiter.api.Test
 
 class ListPresenterTests {
-  private val testScheduler = TestScheduler()
-  private val schedulerProvider = object : SchedulerProvider {
-    override fun io(): Scheduler {
-      return testScheduler
-    }
-
-    override fun ui(): Scheduler {
-      return testScheduler
-    }
-  }
+  private val testSchedulerProvider = TestSchedulerProvider()
   private val view: ListContract.View = mock()
 
+  private val testUserEntity = UserEntity("john", "url", listOf("repo1"))
+  private val secondTestUserEntity = UserEntity("jason", "url", listOf("repo2"))
+
   @Test
-  fun `given users available when fetch users then display users list`() {
+  fun `given users available when retrieve users then display users list`() {
     val presenter = createPresenter(userRepository = mock {
-      on { retrieveUsers() } doReturn Observable.just(listOf(UserEntity("a", "b", listOf("repo"))))
+      on { retrieveUsers() } doReturn Observable.just(listOf(testUserEntity, secondTestUserEntity))
     })
 
     presenter.fetchUsers()
-    testScheduler.triggerActions()
+    testSchedulerProvider.triggerActions()
 
-    verify(view).displayUserList(listOf(UserEntity("a", "b", listOf("repo"))))
+    verify(view).displayUserList(listOf(testUserEntity, secondTestUserEntity))
   }
 
   @Test
-  fun `given users unavailable when fetch users then log error`() {
+  fun `given users available when retrieve users then toggle loading`() {
+    val presenter = createPresenter(userRepository = mock {
+      on { retrieveUsers() } doReturn Observable.just(listOf(testUserEntity, secondTestUserEntity))
+    })
 
+    presenter.fetchUsers()
+    testSchedulerProvider.triggerActions()
+
+    val inOrder = InOrderOnType(view)
+    inOrder.verify().toggleRefreshing(true)
+    inOrder.verify().toggleRefreshing(false)
   }
 
-  // all logic inside presenter can be easily tested. I'm not doing that because I don't have enough time.
-  // some operations like filtering or mapping can be even extracted
-  // to separate classes (like mappers) and tested separately
+  @Test
+  fun `given users not available when retrieve users then display error`() {
+    val errorMessage = "cannot retrieve users"
+    val presenter = createPresenter(userRepository = mock {
+      on { retrieveUsers() } doReturn Observable.error(Throwable(errorMessage))
+    })
 
-  // Additionally, I should test logic inside CompositeUserRepository to make sure merge logic is working correctly.
-  // But I have no time for that.
+    presenter.fetchUsers()
+    testSchedulerProvider.triggerActions()
+
+    verify(view).displayError(errorMessage)
+  }
+
+  @Test
+  fun `given users not available when retrieve users then toggle loading`() {
+    val presenter = createPresenter(userRepository = mock {
+      on { retrieveUsers() } doReturn Observable.error(Throwable("cannot retrieve users"))
+    })
+
+    presenter.fetchUsers()
+    testSchedulerProvider.triggerActions()
+
+    val inOrder = InOrderOnType(view)
+    inOrder.verify().toggleRefreshing(true)
+    inOrder.verify().toggleRefreshing(false)
+  }
+
+  @Test
+  fun `given can retrieve users locally when filter items then display only filtered users`() {
+    val presenter = createPresenter(userRepository = mock {
+      on { retrieveUsersLocally() } doReturn Single.just(listOf(testUserEntity, secondTestUserEntity))
+    })
+
+    presenter.filterUsers("john")
+    testSchedulerProvider.triggerActions()
+
+    verify(view).displayUserList(listOf(testUserEntity))
+  }
+
+  @Test
+  fun `given cannot retrieve users locally when filter items then display error`() {
+    val errorMessage = "error while fetching users locally"
+    val presenter = createPresenter(userRepository = mock {
+      on { retrieveUsersLocally() } doReturn Single.error(Throwable(errorMessage))
+    })
+
+    presenter.filterUsers("john")
+    testSchedulerProvider.triggerActions()
+
+    verify(view).displayError(errorMessage)
+  }
+
+  @Test
+  fun `given retrieving users when release resources then ignore next values`() {
+    val usersSubject = PublishSubject.create<List<UserEntity>>()
+    val presenter = createPresenter(userRepository = mock {
+      on { retrieveUsers() } doReturn usersSubject.hide()
+    })
+
+    presenter.fetchUsers()
+    testSchedulerProvider.triggerActions()
+    usersSubject.onNext(listOf(testUserEntity, secondTestUserEntity))
+    testSchedulerProvider.triggerActions()
+    clearInvocations(view)
+
+    presenter.releaseResources()
+
+    usersSubject.onNext(listOf(testUserEntity, secondTestUserEntity))
+    testSchedulerProvider.triggerActions()
+    verify(view, never()).displayUserList(any())
+  }
 
   private fun createPresenter(userRepository: UserRepository = mock()): ListPresenter {
     return ListPresenter(
       userRepository = userRepository,
-      schedulerProvider = schedulerProvider,
-      view = view
+      schedulerProvider = testSchedulerProvider,
+      view = view,
+      listItemsFilter = ListItemsFilter()
     )
   }
 }
