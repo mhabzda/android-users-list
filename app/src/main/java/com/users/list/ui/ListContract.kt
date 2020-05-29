@@ -11,7 +11,7 @@ interface ListContract {
 
   interface Presenter {
     fun fetchUsers()
-    fun filterUsers(searchQuery: String?)
+    fun filterUsers(searchQuery: String)
     fun releaseResources()
   }
 }

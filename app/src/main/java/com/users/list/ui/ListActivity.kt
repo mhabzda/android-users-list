@@ -74,7 +74,7 @@ class ListActivity : DaggerAppCompatActivity(), ListContract.View {
         return false
       }
 
-      override fun onQueryTextChange(newText: String?): Boolean {
+      override fun onQueryTextChange(newText: String): Boolean {
         presenter.filterUsers(newText)
         return false
       }
