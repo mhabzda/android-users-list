@@ -7,6 +7,10 @@ import javax.inject.Inject
 
 class UserLocalMapper @Inject constructor() {
   fun map(user: UserLocalDto, repositories: List<UserRepositoryLocalDto>): UserEntity {
-    return UserEntity(user.login, user.avatarUrl, repositories.map { it.name })
+    return UserEntity(
+      name = user.login,
+      avatarUrl = user.avatarUrl,
+      repositories = repositories.map { it.name }
+    )
   }
 }

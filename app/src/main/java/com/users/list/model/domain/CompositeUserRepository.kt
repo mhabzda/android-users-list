@@ -15,7 +15,7 @@ class CompositeUserRepository @Inject constructor(
       localUserRepository.retrieveUsers().toObservable().map { UserData.Local(it) },
       remoteUserRepository.retrieveUsers().toObservable().map { UserData.Remote(it) }
     ).distinctUntilChanged { localData, remoteData ->
-      localData.users.containsAll(remoteData.users) && remoteData.users.containsAll(localData.users)
+      localData.users.isContentTheSameAs(remoteData.users)
     }.saveRemoteData().map { it.users }
   }
 
@@ -31,6 +31,10 @@ class CompositeUserRepository @Inject constructor(
         users.forEach { user -> localUserRepository.insertRepositories(user.name, user.repositories) }
       }
     }
+  }
+
+  private fun <T> List<T>.isContentTheSameAs(otherList: List<T>): Boolean {
+    return this.containsAll(otherList) && otherList.containsAll(this)
   }
 
   private sealed class UserData(val users: List<UserEntity>) {
