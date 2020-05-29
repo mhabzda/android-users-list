@@ -2,6 +2,8 @@ package com.users.list.ui
 
 import com.users.list.model.domain.UserEntity
 import com.users.list.testutils.BaseInputProvider
+import com.users.list.testutils.TestUserData.firstTestUserEntity
+import com.users.list.testutils.TestUserData.secondTestUserEntity
 import com.users.list.ui.filter.ListItemsFilter
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.params.ParameterizedTest
@@ -18,15 +20,12 @@ class ListItemsFilterTests {
   }
 
   class InputProvider : BaseInputProvider() {
-    private val testUserEntity = UserEntity("john", "url", listOf("repo1", "jsonSerialize"))
-    private val secondTestUserEntity = UserEntity("micheal", "url", listOf("repo2"))
-
     override val listInput: List<Any>
       get() = listOf(
-        Input("j", listOf(testUserEntity, secondTestUserEntity), listOf(testUserEntity)),
-        Input("micheal", listOf(testUserEntity, secondTestUserEntity), listOf(secondTestUserEntity)),
-        Input("repo1", listOf(testUserEntity, secondTestUserEntity), listOf(testUserEntity)),
-        Input("scottie", listOf(testUserEntity, secondTestUserEntity), emptyList())
+        Input("j", listOf(firstTestUserEntity, secondTestUserEntity), listOf(firstTestUserEntity)),
+        Input("micheal", listOf(firstTestUserEntity, secondTestUserEntity), listOf(secondTestUserEntity)),
+        Input("repo1", listOf(firstTestUserEntity, secondTestUserEntity), listOf(firstTestUserEntity)),
+        Input("scottie", listOf(firstTestUserEntity, secondTestUserEntity), emptyList())
       )
   }
 

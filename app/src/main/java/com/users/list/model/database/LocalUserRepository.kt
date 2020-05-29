@@ -14,9 +14,9 @@ class LocalUserRepository @Inject constructor(
   private val userDao: UserDao,
   private val repositoryDao: RepositoryDao,
   private val userLocalMapper: UserLocalMapper
-) {
+) : LocalRepository {
 
-  fun retrieveUsers(): Single<List<UserEntity>> {
+  override fun retrieveUsers(): Single<List<UserEntity>> {
     return userDao.getUsers().toObservable()
       .flatMapIterable()
       .flatMap(
@@ -26,7 +26,7 @@ class LocalUserRepository @Inject constructor(
       .toList()
   }
 
-  fun insertUsers(users: List<UserEntity>) {
+  override fun insertUsers(users: List<UserEntity>) {
     userDao.insert(
       *users
         .map { UserLocalDto(it.name, it.avatarUrl) }
@@ -34,7 +34,7 @@ class LocalUserRepository @Inject constructor(
     )
   }
 
-  fun insertRepositories(userName: String, repositories: List<String>) {
+  override fun insertRepositories(userName: String, repositories: List<String>) {
     repositoryDao.insert(
       *repositories
         .map { UserRepositoryLocalDto(userName, it) }

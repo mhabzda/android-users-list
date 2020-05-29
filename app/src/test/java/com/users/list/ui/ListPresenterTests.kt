@@ -9,6 +9,8 @@ import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.users.list.model.domain.UserEntity
 import com.users.list.model.domain.UserRepository
+import com.users.list.testutils.TestUserData.firstTestUserEntity
+import com.users.list.testutils.TestUserData.secondTestUserEntity
 import com.users.list.ui.filter.ListItemsFilter
 import io.reactivex.Observable
 import io.reactivex.Single
@@ -19,25 +21,22 @@ class ListPresenterTests {
   private val testSchedulerProvider = TestSchedulerProvider()
   private val view: ListContract.View = mock()
 
-  private val testUserEntity = UserEntity("john", "url", listOf("repo1"))
-  private val secondTestUserEntity = UserEntity("jason", "url", listOf("repo2"))
-
   @Test
   fun `given users available when retrieve users then display users list`() {
     val presenter = createPresenter(userRepository = mock {
-      on { retrieveUsers() } doReturn Observable.just(listOf(testUserEntity, secondTestUserEntity))
+      on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
     })
 
     presenter.fetchUsers()
     testSchedulerProvider.triggerActions()
 
-    verify(view).displayUserList(listOf(testUserEntity, secondTestUserEntity))
+    verify(view).displayUserList(listOf(firstTestUserEntity, secondTestUserEntity))
   }
 
   @Test
   fun `given users available when retrieve users then toggle loading`() {
     val presenter = createPresenter(userRepository = mock {
-      on { retrieveUsers() } doReturn Observable.just(listOf(testUserEntity, secondTestUserEntity))
+      on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
     })
 
     presenter.fetchUsers()
@@ -78,13 +77,13 @@ class ListPresenterTests {
   @Test
   fun `given can retrieve users locally when filter items then display only filtered users`() {
     val presenter = createPresenter(userRepository = mock {
-      on { retrieveUsersLocally() } doReturn Single.just(listOf(testUserEntity, secondTestUserEntity))
+      on { retrieveUsersLocally() } doReturn Single.just(listOf(firstTestUserEntity, secondTestUserEntity))
     })
 
     presenter.filterUsers("john")
     testSchedulerProvider.triggerActions()
 
-    verify(view).displayUserList(listOf(testUserEntity))
+    verify(view).displayUserList(listOf(firstTestUserEntity))
   }
 
   @Test
@@ -109,13 +108,13 @@ class ListPresenterTests {
 
     presenter.fetchUsers()
     testSchedulerProvider.triggerActions()
-    usersSubject.onNext(listOf(testUserEntity, secondTestUserEntity))
+    usersSubject.onNext(listOf(firstTestUserEntity, secondTestUserEntity))
     testSchedulerProvider.triggerActions()
     clearInvocations(view)
 
     presenter.releaseResources()
 
-    usersSubject.onNext(listOf(testUserEntity, secondTestUserEntity))
+    usersSubject.onNext(listOf(firstTestUserEntity, secondTestUserEntity))
     testSchedulerProvider.triggerActions()
     verify(view, never()).displayUserList(any())
   }
