@@ -19,8 +19,7 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
     }
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-    val context = parent.context
-    val inflater = LayoutInflater.from(context)
+    val inflater = LayoutInflater.from(parent.context)
     val contactView = inflater.inflate(R.layout.item_user, parent, false)
 
     return ViewHolder(contactView)
@@ -42,7 +41,7 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
     fun bind(item: UserEntity) {
       userNameTextView.text = item.name
       imageAvatarView.loadImage(item.avatarUrl)
-      repositoriesTextView.text = item.repositories.toString()
+      repositoriesTextView.text = item.repositories.joinToString()
     }
   }
 }

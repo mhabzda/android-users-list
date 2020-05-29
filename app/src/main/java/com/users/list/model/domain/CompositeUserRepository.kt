@@ -1,32 +1,44 @@
 package com.users.list.model.domain
 
 import com.users.list.model.api.RemoteRepository
-import com.users.list.model.database.LocalUserRepository
-import io.reactivex.Maybe
+import com.users.list.model.database.LocalRepository
 import io.reactivex.Observable
+import io.reactivex.Single
+import javax.inject.Inject
 
-class CompositeUserRepository(
-  private val localUserRepository: LocalUserRepository,
+class CompositeUserRepository @Inject constructor(
+  private val localUserRepository: LocalRepository,
   private val remoteUserRepository: RemoteRepository
 ) : UserRepository {
   override fun retrieveUsers(): Observable<List<UserEntity>> {
-    return Observable.merge(
-      localUserRepository.retrieveUsers().toObservable(),
-      getRemoteUsers()
-    ).distinctUntilChanged()
+    return Observable.mergeDelayError(
+      localUserRepository.retrieveUsers().toObservable().map { UserData.Local(it) },
+      remoteUserRepository.retrieveUsers().toObservable().map { UserData.Remote(it) }
+    ).distinctUntilChanged { localData, remoteData ->
+      localData.users.isContentTheSameAs(remoteData.users)
+    }.saveRemoteData().map { it.users }
   }
 
-  override fun retrieveUsersLocally(): Maybe<List<UserEntity>> {
+  override fun retrieveUsersLocally(): Single<List<UserEntity>> {
     return localUserRepository.retrieveUsers()
   }
 
-  private fun getRemoteUsers(): Observable<List<UserEntity>> {
-    return remoteUserRepository.retrieveUsers().toObservable()
-      .doOnNext { users ->
+  private fun Observable<UserData>.saveRemoteData(): Observable<UserData> {
+    return doOnNext { userData ->
+      if (userData is UserData.Remote) {
+        val users = userData.users
         localUserRepository.insertUsers(users)
-        users.forEach { user ->
-          localUserRepository.insertRepositories(user.name, user.repositories)
-        }
+        users.forEach { user -> localUserRepository.insertRepositories(user.name, user.repositories) }
       }
+    }
+  }
+
+  private fun <T> List<T>.isContentTheSameAs(otherList: List<T>): Boolean {
+    return this.containsAll(otherList) && otherList.containsAll(this)
+  }
+
+  private sealed class UserData(val users: List<UserEntity>) {
+    class Remote(users: List<UserEntity>) : UserData(users)
+    class Local(users: List<UserEntity>) : UserData(users)
   }
 }

@@ -5,7 +5,6 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.users.list.model.database.dtos.UserRepositoryLocalDto
-import io.reactivex.Maybe
 import io.reactivex.Single
 
 @Dao
@@ -14,5 +13,5 @@ interface RepositoryDao {
   fun insert(vararg repos: UserRepositoryLocalDto)
 
   @Query("SELECT * FROM userRepositories WHERE userLogin = :userName")
-  fun getRepositories(userName: String): Maybe<List<UserRepositoryLocalDto>>
+  fun getRepositories(userName: String): Single<List<UserRepositoryLocalDto>>
 }

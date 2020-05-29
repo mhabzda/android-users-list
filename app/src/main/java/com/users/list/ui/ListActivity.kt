@@ -1,38 +1,45 @@
 package com.users.list.ui
 
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.Menu
+import android.widget.Toast
 import androidx.appcompat.widget.SearchView
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.users.R
-import com.users.list.model.api.RemoteUserRepository
-import com.users.list.model.database.LocalUserRepository
-import com.users.list.model.domain.CompositeUserRepository
 import com.users.list.model.domain.UserEntity
 import com.users.list.ui.adapter.UsersAdapter
-import com.users.list.ui.schedulers.AndroidSchedulerProvider
-import kotlinx.android.synthetic.main.activity_main.user_search as userSearch
-import kotlinx.android.synthetic.main.activity_main.users_list as usersRecyclerView
+import com.users.list.utils.EMPTY
+import dagger.android.support.DaggerAppCompatActivity
+import javax.inject.Inject
+import kotlinx.android.synthetic.main.activity_list.swipe_refresh as swipeRefresh
+import kotlinx.android.synthetic.main.activity_list.users_list as usersRecyclerView
 
-class ListActivity : AppCompatActivity(), ListContract.View {
+class ListActivity : DaggerAppCompatActivity(), ListContract.View {
+  @Inject
+  lateinit var presenter: ListContract.Presenter
+
   private lateinit var usersAdapter: UsersAdapter
-  private lateinit var presenter: ListPresenter
+  private lateinit var searchView: SearchView
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_main)
+    setContentView(R.layout.activity_list)
 
-    val userRepository = CompositeUserRepository(LocalUserRepository(application), RemoteUserRepository())
-    val schedulerProvider = AndroidSchedulerProvider()
+    initializeRecyclerView()
+    swipeRefresh.setOnRefreshListener {
+      presenter.fetchUsers()
+      searchView.setQuery(EMPTY, false)
+    }
 
-    presenter = ListPresenter(userRepository, schedulerProvider, this)
+    presenter.fetchUsers()
+  }
 
+  private fun initializeRecyclerView() {
     usersAdapter = UsersAdapter()
     usersRecyclerView.adapter = usersAdapter
     usersRecyclerView.layoutManager = LinearLayoutManager(this)
-    userSearch.setOnQueryTextListener(createOnQueryTextListener())
-
-    presenter.fetchUsers()
+    usersRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
   }
 
   override fun onDestroy() {
@@ -40,8 +47,25 @@ class ListActivity : AppCompatActivity(), ListContract.View {
     super.onDestroy()
   }
 
+  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menuInflater.inflate(R.menu.search_menu, menu)
+
+    searchView = menu?.findItem(R.id.action_search)?.actionView as SearchView
+    searchView.setOnQueryTextListener(createOnQueryTextListener())
+
+    return super.onCreateOptionsMenu(menu)
+  }
+
   override fun displayUserList(users: List<UserEntity>) {
     usersAdapter.users = users
+  }
+
+  override fun toggleRefreshing(isRefreshing: Boolean) {
+    swipeRefresh.isRefreshing = isRefreshing
+  }
+
+  override fun displayError(errorMessage: String) {
+    Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
   }
 
   private fun createOnQueryTextListener(): SearchView.OnQueryTextListener {
@@ -50,7 +74,7 @@ class ListActivity : AppCompatActivity(), ListContract.View {
         return false
       }
 
-      override fun onQueryTextChange(newText: String?): Boolean {
+      override fun onQueryTextChange(newText: String): Boolean {
         presenter.filterUsers(newText)
         return false
       }

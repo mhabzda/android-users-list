@@ -3,6 +3,7 @@ package com.users.list.model.database.dtos
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
@@ -12,7 +13,8 @@ import androidx.room.PrimaryKey
     parentColumns = ["login"],
     childColumns = ["userLogin"],
     onDelete = ForeignKey.CASCADE
-  )]
+  )],
+  indices = [Index("userLogin")]
 )
 data class UserRepositoryLocalDto(
   @ColumnInfo(name = "userLogin")
