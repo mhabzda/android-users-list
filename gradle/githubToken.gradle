@@ -1,0 +1,12 @@
+static def getGithubToken(String filePath) {
+    File file = new File(filePath)
+    String token
+    if (file.exists()) {
+        token = "\"${file.text}\""
+    } else {
+        token = "\"\""
+    }
+    return token
+}
+
+ext.getGithubToken = this.&getGithubToken

@@ -1,16 +1,10 @@
-buildscript {
-    repositories {
-        apply from: "$rootDir/versions.gradle"
-        google()
-        mavenCentral()
-    }
+plugins {
+    alias libs.plugins.versions
+    alias libs.plugins.versions.catalog.update
+}
 
-    dependencies {
-        apply from: "$rootDir/versions.gradle"
-        classpath 'com.android.tools.build:gradle:7.1.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
-        classpath "de.mannodermaus.gradle.plugins:android-junit5:1.8.2.0"
-    }
+versionCatalogUpdate {
+    sortByKey = false
 }
 
 task clean(type: Delete) {
