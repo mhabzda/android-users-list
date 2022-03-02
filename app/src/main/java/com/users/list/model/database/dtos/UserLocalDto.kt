@@ -6,10 +6,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "users")
 data class UserLocalDto(
-  @PrimaryKey
-  @ColumnInfo(name = "login")
-  val login: String,
+    @PrimaryKey
+    @ColumnInfo(name = "login")
+    val login: String,
 
-  @ColumnInfo(name = "avatar_url")
-  val avatarUrl: String
+    @ColumnInfo(name = "avatar_url")
+    val avatarUrl: String
 )

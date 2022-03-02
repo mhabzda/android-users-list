@@ -10,12 +10,12 @@ import dagger.Module
 
 @Module
 abstract class ListViewModule {
-  @Binds
-  abstract fun provideListPresenter(listPresenter: ListPresenter): ListContract.Presenter
+    @Binds
+    abstract fun provideListPresenter(listPresenter: ListPresenter): ListContract.Presenter
 
-  @Binds
-  abstract fun provideListView(listActivity: ListActivity): ListContract.View
+    @Binds
+    abstract fun provideListView(listActivity: ListActivity): ListContract.View
 
-  @Binds
-  abstract fun provideSchedulerProvider(androidSchedulerProvider: AndroidSchedulerProvider): SchedulerProvider
+    @Binds
+    abstract fun provideSchedulerProvider(androidSchedulerProvider: AndroidSchedulerProvider): SchedulerProvider
 }

@@ -12,36 +12,36 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 
 @Module
 class NetworkModule {
-  @Provides
-  fun provideHttpClient(): OkHttpClient {
-    val httpClientBuilder = OkHttpClient.Builder()
+    @Provides
+    fun provideHttpClient(): OkHttpClient {
+        val httpClientBuilder = OkHttpClient.Builder()
 
-    val accessToken = BuildConfig.GITHUB_TOKEN
-    if (accessToken.isNotBlank()) {
-      httpClientBuilder.addInterceptor { chain ->
-        val request = chain.request().newBuilder()
-          .header("Authorization", "token $accessToken")
-          .build()
+        val accessToken = BuildConfig.GITHUB_TOKEN
+        if (accessToken.isNotBlank()) {
+            httpClientBuilder.addInterceptor { chain ->
+                val request = chain.request().newBuilder()
+                    .header("Authorization", "token $accessToken")
+                    .build()
 
-        chain.proceed(request)
-      }
+                chain.proceed(request)
+            }
+        }
+
+        return httpClientBuilder.build()
     }
 
-    return httpClientBuilder.build()
-  }
+    @Provides
+    fun provideUserApi(httpClient: OkHttpClient): UserApi {
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
+            .addConverterFactory(MoshiConverterFactory.create())
+            .client(httpClient)
+            .build()
+            .create(UserApi::class.java)
+    }
 
-  @Provides
-  fun provideUserApi(httpClient: OkHttpClient): UserApi {
-    return Retrofit.Builder()
-      .baseUrl(BASE_URL)
-      .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-      .addConverterFactory(MoshiConverterFactory.create())
-      .client(httpClient)
-      .build()
-      .create(UserApi::class.java)
-  }
-
-  companion object {
-    private const val BASE_URL = "https://api.github.com"
-  }
+    companion object {
+        private const val BASE_URL = "https://api.github.com"
+    }
 }

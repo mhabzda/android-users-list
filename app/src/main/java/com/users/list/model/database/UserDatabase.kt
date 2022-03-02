@@ -8,11 +8,11 @@ import com.users.list.model.database.dtos.UserLocalDto
 import com.users.list.model.database.dtos.UserRepositoryLocalDto
 
 @Database(
-  entities = [UserLocalDto::class, UserRepositoryLocalDto::class],
-  version = 2,
-  exportSchema = false
+    entities = [UserLocalDto::class, UserRepositoryLocalDto::class],
+    version = 2,
+    exportSchema = false
 )
 abstract class UserDatabase : RoomDatabase() {
-  abstract fun userDao(): UserDao
-  abstract fun repositoryDao(): RepositoryDao
+    abstract fun userDao(): UserDao
+    abstract fun repositoryDao(): RepositoryDao
 }

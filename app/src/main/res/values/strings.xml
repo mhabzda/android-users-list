@@ -1,5 +1,5 @@
 <resources>
-  <string name="app_name">Users List</string>
+    <string name="app_name">Users List</string>
 
-  <string name="list_search_hint">Search</string>
+    <string name="list_search_hint">Search</string>
 </resources>

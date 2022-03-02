@@ -5,6 +5,6 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class UserRepositoryRemoteDto(
-  @Json(name = "name")
-  val name: String
+    @Json(name = "name")
+    val name: String
 )

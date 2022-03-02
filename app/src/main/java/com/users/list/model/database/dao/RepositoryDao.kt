@@ -9,9 +9,9 @@ import io.reactivex.Single
 
 @Dao
 interface RepositoryDao {
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insert(vararg repos: UserRepositoryLocalDto)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(vararg repos: UserRepositoryLocalDto)
 
-  @Query("SELECT * FROM userRepositories WHERE userLogin = :userName")
-  fun getRepositories(userName: String): Single<List<UserRepositoryLocalDto>>
+    @Query("SELECT * FROM userRepositories WHERE userLogin = :userName")
+    fun getRepositories(userName: String): Single<List<UserRepositoryLocalDto>>
 }

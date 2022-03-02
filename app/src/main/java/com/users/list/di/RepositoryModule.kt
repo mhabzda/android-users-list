@@ -11,12 +11,12 @@ import dagger.Module
 
 @Module
 abstract class RepositoryModule {
-  @Binds
-  abstract fun provideLocalRepository(localUserRepository: LocalUserRepository): LocalRepository
+    @Binds
+    abstract fun provideLocalRepository(localUserRepository: LocalUserRepository): LocalRepository
 
-  @Binds
-  abstract fun provideRemoteRepository(remoteUserRepository: RemoteUserRepository): RemoteRepository
+    @Binds
+    abstract fun provideRemoteRepository(remoteUserRepository: RemoteUserRepository): RemoteRepository
 
-  @Binds
-  abstract fun provideUserRepository(compositeUserRepository: CompositeUserRepository): UserRepository
+    @Binds
+    abstract fun provideUserRepository(compositeUserRepository: CompositeUserRepository): UserRepository
 }

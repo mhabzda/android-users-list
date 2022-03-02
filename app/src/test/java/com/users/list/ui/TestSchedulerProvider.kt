@@ -5,17 +5,17 @@ import io.reactivex.Scheduler
 import io.reactivex.schedulers.TestScheduler
 
 class TestSchedulerProvider : SchedulerProvider {
-  private val testScheduler = TestScheduler()
+    private val testScheduler = TestScheduler()
 
-  override fun io(): Scheduler {
-    return testScheduler
-  }
+    override fun io(): Scheduler {
+        return testScheduler
+    }
 
-  override fun ui(): Scheduler {
-    return testScheduler
-  }
+    override fun ui(): Scheduler {
+        return testScheduler
+    }
 
-  fun triggerActions() {
-    testScheduler.triggerActions()
-  }
+    fun triggerActions() {
+        testScheduler.triggerActions()
+    }
 }

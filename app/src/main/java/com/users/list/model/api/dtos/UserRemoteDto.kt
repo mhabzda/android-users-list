@@ -5,9 +5,9 @@ import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
 data class UserRemoteDto(
-  @Json(name = "login")
-  val login: String,
+    @Json(name = "login")
+    val login: String,
 
-  @Json(name = "avatar_url")
-  val avatarUrl: String
+    @Json(name = "avatar_url")
+    val avatarUrl: String
 )

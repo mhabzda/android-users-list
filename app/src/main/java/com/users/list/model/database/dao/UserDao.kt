@@ -9,9 +9,9 @@ import io.reactivex.Single
 
 @Dao
 interface UserDao {
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  fun insert(vararg users: UserLocalDto)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insert(vararg users: UserLocalDto)
 
-  @Query("SELECT * FROM users")
-  fun getUsers(): Single<List<UserLocalDto>>
+    @Query("SELECT * FROM users")
+    fun getUsers(): Single<List<UserLocalDto>>
 }

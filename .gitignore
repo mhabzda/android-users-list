@@ -4,6 +4,7 @@
 /local.properties
 
 /.idea/
+!/.idea/codeStyles
 
 .DS_Store
 /build

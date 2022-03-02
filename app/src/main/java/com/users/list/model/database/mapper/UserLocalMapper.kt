@@ -6,11 +6,11 @@ import com.users.list.model.domain.UserEntity
 import javax.inject.Inject
 
 class UserLocalMapper @Inject constructor() {
-  fun map(user: UserLocalDto, repositories: List<UserRepositoryLocalDto>): UserEntity {
-    return UserEntity(
-      name = user.login,
-      avatarUrl = user.avatarUrl,
-      repositories = repositories.map { it.name }
-    )
-  }
+    fun map(user: UserLocalDto, repositories: List<UserRepositoryLocalDto>): UserEntity {
+        return UserEntity(
+            name = user.login,
+            avatarUrl = user.avatarUrl,
+            repositories = repositories.map { it.name }
+        )
+    }
 }

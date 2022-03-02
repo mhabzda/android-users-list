@@ -1,52 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  xmlns:app="http://schemas.android.com/apk/res-auto"
-  xmlns:tools="http://schemas.android.com/tools"
-  android:layout_width="match_parent"
-  android:layout_height="wrap_content"
-  android:orientation="vertical"
-  >
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-  <ImageView
-    android:id="@+id/user_image"
-    android:layout_width="@dimen/user_image_size"
-    android:layout_height="@dimen/user_image_size"
-    android:src="@color/colorAccent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    tools:src="@drawable/ic_launcher_background"
-    />
+    <ImageView
+        android:id="@+id/user_image"
+        android:layout_width="@dimen/user_image_size"
+        android:layout_height="@dimen/user_image_size"
+        android:src="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_launcher_background" />
 
-  <TextView
-    android:id="@+id/user_name_text"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:gravity="center"
-    android:paddingStart="@dimen/default_padding"
-    android:paddingEnd="@dimen/default_padding"
-    android:textSize="@dimen/bigger_text"
-    app:layout_constraintBottom_toTopOf="@id/user_repositories_text"
-    app:layout_constraintLeft_toRightOf="@id/user_image"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    tools:text="John Doe"
-    />
+    <TextView
+        android:id="@+id/user_name_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:textSize="@dimen/bigger_text"
+        app:layout_constraintBottom_toTopOf="@id/user_repositories_text"
+        app:layout_constraintLeft_toRightOf="@id/user_image"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="John Doe" />
 
-  <TextView
-    android:id="@+id/user_repositories_text"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:gravity="center"
-    android:paddingStart="@dimen/default_padding"
-    android:paddingEnd="@dimen/default_padding"
-    android:textSize="@dimen/regular_text"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintLeft_toRightOf="@id/user_image"
-    app:layout_constraintRight_toRightOf="parent"
-    app:layout_constraintTop_toBottomOf="@id/user_name_text"
-    tools:text="android-list, ios-app, very_long_project"
-    />
+    <TextView
+        android:id="@+id/user_repositories_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:paddingStart="@dimen/default_padding"
+        android:paddingEnd="@dimen/default_padding"
+        android:textSize="@dimen/regular_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toRightOf="@id/user_image"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/user_name_text"
+        tools:text="android-list, ios-app, very_long_project" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

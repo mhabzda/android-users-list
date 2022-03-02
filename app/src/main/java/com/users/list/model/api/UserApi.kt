@@ -7,9 +7,9 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface UserApi {
-  @GET("users")
-  fun fetchUsers(): Single<List<UserRemoteDto>>
+    @GET("users")
+    fun fetchUsers(): Single<List<UserRemoteDto>>
 
-  @GET("users/{user_login}/repos")
-  fun fetchUserRepository(@Path("user_login") userLogin: String): Single<List<UserRepositoryRemoteDto>>
+    @GET("users/{user_login}/repos")
+    fun fetchUserRepository(@Path("user_login") userLogin: String): Single<List<UserRepositoryRemoteDto>>
 }

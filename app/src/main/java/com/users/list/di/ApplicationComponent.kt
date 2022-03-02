@@ -8,15 +8,15 @@ import javax.inject.Singleton
 
 @Singleton
 @Component(
-  modules = [
-    AndroidInjectionModule::class,
-    ScreensModule::class,
-    DatabaseModule::class,
-    NetworkModule::class,
-    RepositoryModule::class
-  ]
+    modules = [
+        AndroidInjectionModule::class,
+        ScreensModule::class,
+        DatabaseModule::class,
+        NetworkModule::class,
+        RepositoryModule::class
+    ]
 )
 interface ApplicationComponent : AndroidInjector<DaggerApplication> {
-  @Component.Factory
-  interface Factory : AndroidInjector.Factory<DaggerApplication>
+    @Component.Factory
+    interface Factory : AndroidInjector.Factory<DaggerApplication>
 }

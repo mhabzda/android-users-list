@@ -10,24 +10,24 @@ import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.ArgumentsSource
 
 class ListItemsFilterTests {
-  @ParameterizedTest
-  @ArgumentsSource(InputProvider::class)
-  fun `it should filter items`(input: Input) {
-    val filter = ListItemsFilter()
-    val result = filter.filterItems(input.query, input.users)
+    @ParameterizedTest
+    @ArgumentsSource(InputProvider::class)
+    fun `it should filter items`(input: Input) {
+        val filter = ListItemsFilter()
+        val result = filter.filterItems(input.query, input.users)
 
-    assertEquals(input.expectedFilteredUsers, result)
-  }
+        assertEquals(input.expectedFilteredUsers, result)
+    }
 
-  class InputProvider : BaseInputProvider() {
-    override val listInput: List<Any>
-      get() = listOf(
-        Input("j", listOf(firstTestUserEntity, secondTestUserEntity), listOf(firstTestUserEntity)),
-        Input("micheal", listOf(firstTestUserEntity, secondTestUserEntity), listOf(secondTestUserEntity)),
-        Input("repo1", listOf(firstTestUserEntity, secondTestUserEntity), listOf(firstTestUserEntity)),
-        Input("scottie", listOf(firstTestUserEntity, secondTestUserEntity), emptyList())
-      )
-  }
+    class InputProvider : BaseInputProvider() {
+        override val listInput: List<Any>
+            get() = listOf(
+                Input("j", listOf(firstTestUserEntity, secondTestUserEntity), listOf(firstTestUserEntity)),
+                Input("micheal", listOf(firstTestUserEntity, secondTestUserEntity), listOf(secondTestUserEntity)),
+                Input("repo1", listOf(firstTestUserEntity, secondTestUserEntity), listOf(firstTestUserEntity)),
+                Input("scottie", listOf(firstTestUserEntity, secondTestUserEntity), emptyList())
+            )
+    }
 
-  data class Input(val query: String, val users: List<UserEntity>, val expectedFilteredUsers: List<UserEntity>)
+    data class Input(val query: String, val users: List<UserEntity>, val expectedFilteredUsers: List<UserEntity>)
 }

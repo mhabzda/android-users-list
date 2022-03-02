@@ -1,2 +1,2 @@
-rootProject.name='android-users-list'
+rootProject.name = 'android-users-list'
 include ':app'

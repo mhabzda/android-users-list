@@ -4,6 +4,6 @@ import io.reactivex.Observable
 import io.reactivex.Single
 
 interface UserRepository {
-  fun retrieveUsers(): Observable<List<UserEntity>>
-  fun retrieveUsersLocally(): Single<List<UserEntity>>
+    fun retrieveUsers(): Observable<List<UserEntity>>
+    fun retrieveUsersLocally(): Single<List<UserEntity>>
 }
