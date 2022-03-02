@@ -2,12 +2,9 @@ package com.users.list.ui.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.users.R
+import com.users.databinding.ItemUserBinding
 import com.users.list.model.domain.UserEntity
 import com.users.list.utils.loadImage
 
@@ -21,8 +18,8 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
-        return ViewHolder(view)
+        val binding = ItemUserBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ViewHolder(binding)
     }
 
     override fun getItemCount(): Int =
@@ -32,15 +29,11 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
         holder.bind(users[position])
     }
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val userNameTextView = itemView.findViewById<TextView>(R.id.user_name_text)
-        private val imageAvatarView = itemView.findViewById<ImageView>(R.id.user_image)
-        private val repositoriesTextView = itemView.findViewById<TextView>(R.id.user_repositories_text)
-
-        fun bind(item: UserEntity) {
-            userNameTextView.text = item.name
-            imageAvatarView.loadImage(item.avatarUrl)
-            repositoriesTextView.text = item.repositories.joinToString()
+    inner class ViewHolder(private val binding: ItemUserBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(item: UserEntity) = with(binding) {
+            userNameText.text = item.name
+            userImage.loadImage(item.avatarUrl)
+            userRepositoriesText.text = item.repositories.joinToString()
         }
     }
 }

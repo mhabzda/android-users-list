@@ -157,10 +157,6 @@ class CompositeUserRepositoryTest {
             .assertError(error)
     }
 
-    private fun createRepository(
-        localUserRepository: LocalRepository,
-        remoteUserRepository: RemoteRepository
-    ): CompositeUserRepository {
-        return CompositeUserRepository(localUserRepository, remoteUserRepository)
-    }
+    private fun createRepository(localUserRepository: LocalRepository, remoteUserRepository: RemoteRepository) =
+        CompositeUserRepository(localUserRepository, remoteUserRepository)
 }

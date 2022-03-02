@@ -1,5 +1,5 @@
-static def getGithubToken(String filePath) {
-    File file = new File(filePath)
+static def getGithubToken() {
+    File file = new File("../github_token.txt")
     String token
     if (file.exists()) {
         token = "\"${file.text}\""

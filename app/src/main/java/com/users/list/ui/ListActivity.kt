@@ -5,46 +5,37 @@ import android.view.Menu
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.users.R
+import com.users.databinding.ActivityListBinding
 import com.users.list.model.domain.UserEntity
 import com.users.list.ui.adapter.UsersAdapter
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
-import kotlinx.android.synthetic.main.activity_list.swipe_refresh as swipeRefresh
-import kotlinx.android.synthetic.main.activity_list.users_list as usersRecyclerView
 
 class ListActivity : DaggerAppCompatActivity(), ListContract.View {
 
     @Inject
     lateinit var presenter: ListContract.Presenter
 
+    private lateinit var binding: ActivityListBinding
     private lateinit var usersAdapter: UsersAdapter
     private lateinit var searchView: SearchView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_list)
+        binding = ActivityListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        initializeRecyclerView()
-        swipeRefresh.setOnRefreshListener {
-            presenter.fetchUsers()
-            searchView.setQuery("", false)
-        }
+        initializeList()
+        binding.listSwipeRefresh.setOnRefreshListener { presenter.onRefresh() }
 
-        presenter.fetchUsers()
+        presenter.onCreate()
     }
 
-    private fun initializeRecyclerView() {
+    private fun initializeList() = with(binding) {
         usersAdapter = UsersAdapter()
-        usersRecyclerView.adapter = usersAdapter
-        usersRecyclerView.layoutManager = LinearLayoutManager(this)
-        usersRecyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
-    }
-
-    override fun onDestroy() {
-        presenter.releaseResources()
-        super.onDestroy()
+        listUsers.adapter = usersAdapter
+        listUsers.addItemDecoration(DividerItemDecoration(this@ListActivity, DividerItemDecoration.VERTICAL))
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -56,28 +47,36 @@ class ListActivity : DaggerAppCompatActivity(), ListContract.View {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun displayUserList(users: List<UserEntity>) {
+    override fun displayUsersList(users: List<UserEntity>) {
         usersAdapter.users = users
     }
 
     override fun toggleRefreshing(isRefreshing: Boolean) {
-        swipeRefresh.isRefreshing = isRefreshing
+        binding.listSwipeRefresh.isRefreshing = isRefreshing
+    }
+
+    override fun clearSearch() {
+        searchView.setQuery("", false)
     }
 
     override fun displayError(errorMessage: String) {
-        Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
     }
 
-    private fun createOnQueryTextListener(): SearchView.OnQueryTextListener {
-        return object : SearchView.OnQueryTextListener {
+    override fun onDestroy() {
+        presenter.onClear()
+        super.onDestroy()
+    }
+
+    private fun createOnQueryTextListener(): SearchView.OnQueryTextListener =
+        object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
                 return false
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                presenter.filterUsers(newText)
+                presenter.onSearchTextChange(newText)
                 return false
             }
         }
-    }
 }

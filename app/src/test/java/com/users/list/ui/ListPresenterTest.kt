@@ -15,58 +15,46 @@ import org.mockito.kotlin.clearInvocations
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
-class ListPresenterTests {
+class ListPresenterTest {
+
     private val testSchedulerProvider = TestSchedulerProvider()
     private val view: ListContract.View = mock()
 
     @Test
-    fun `given users available when retrieve users then display users list`() {
+    fun `given users available when on create then display users list`() {
         val presenter = createPresenter(userRepository = mock {
             on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
         })
 
-        presenter.fetchUsers()
+        presenter.onCreate()
         testSchedulerProvider.triggerActions()
 
-        verify(view).displayUserList(listOf(firstTestUserEntity, secondTestUserEntity))
+        verify(view).displayUsersList(listOf(firstTestUserEntity, secondTestUserEntity))
     }
 
     @Test
-    fun `given users available when retrieve users then toggle loading`() {
-        val presenter = createPresenter(userRepository = mock {
-            on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
-        })
-
-        presenter.fetchUsers()
-        testSchedulerProvider.triggerActions()
-
-        val inOrder = InOrderOnType(view)
-        inOrder.verify().toggleRefreshing(true)
-        inOrder.verify().toggleRefreshing(false)
-    }
-
-    @Test
-    fun `given users not available when retrieve users then display error`() {
+    fun `given users not available when on create then display error`() {
         val errorMessage = "cannot retrieve users"
         val presenter = createPresenter(userRepository = mock {
             on { retrieveUsers() } doReturn Observable.error(Throwable(errorMessage))
         })
 
-        presenter.fetchUsers()
+        presenter.onCreate()
         testSchedulerProvider.triggerActions()
 
         verify(view).displayError(errorMessage)
     }
 
     @Test
-    fun `given users not available when retrieve users then toggle loading`() {
+    fun `toggle loading on create`() {
         val presenter = createPresenter(userRepository = mock {
-            on { retrieveUsers() } doReturn Observable.error(Throwable("cannot retrieve users"))
+            on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
         })
 
-        presenter.fetchUsers()
+        presenter.onCreate()
         testSchedulerProvider.triggerActions()
 
         val inOrder = InOrderOnType(view)
@@ -75,56 +63,70 @@ class ListPresenterTests {
     }
 
     @Test
-    fun `given can retrieve users locally when filter items then display only filtered users`() {
+    fun `fetch users and clear search on refresh`() {
+        val presenter = createPresenter(userRepository = mock {
+            on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
+        })
+        presenter.onCreate()
+        testSchedulerProvider.triggerActions()
+
+        presenter.onRefresh()
+        testSchedulerProvider.triggerActions()
+
+        verify(view, times(2)).displayUsersList(listOf(firstTestUserEntity, secondTestUserEntity))
+        verify(view).clearSearch()
+    }
+
+    @Test
+    fun `given can retrieve users locally when search text change then display only filtered users`() {
         val presenter = createPresenter(userRepository = mock {
             on { retrieveUsersLocally() } doReturn Single.just(listOf(firstTestUserEntity, secondTestUserEntity))
         })
 
-        presenter.filterUsers("john")
+        presenter.onSearchTextChange("john")
         testSchedulerProvider.triggerActions()
 
-        verify(view).displayUserList(listOf(firstTestUserEntity))
+        verify(view).displayUsersList(listOf(firstTestUserEntity))
     }
 
     @Test
-    fun `given cannot retrieve users locally when filter items then display error`() {
+    fun `given cannot retrieve users locally when search text change then display error`() {
         val errorMessage = "error while fetching users locally"
         val presenter = createPresenter(userRepository = mock {
             on { retrieveUsersLocally() } doReturn Single.error(Throwable(errorMessage))
         })
 
-        presenter.filterUsers("john")
+        presenter.onSearchTextChange("john")
         testSchedulerProvider.triggerActions()
 
         verify(view).displayError(errorMessage)
     }
 
     @Test
-    fun `given retrieving users when release resources then ignore next values`() {
+    fun `clear observers and ignore next values when on clear`() {
         val usersSubject = PublishSubject.create<List<UserEntity>>()
         val presenter = createPresenter(userRepository = mock {
             on { retrieveUsers() } doReturn usersSubject.hide()
         })
 
-        presenter.fetchUsers()
+        presenter.onCreate()
         testSchedulerProvider.triggerActions()
         usersSubject.onNext(listOf(firstTestUserEntity, secondTestUserEntity))
         testSchedulerProvider.triggerActions()
         clearInvocations(view)
 
-        presenter.releaseResources()
+        presenter.onClear()
 
         usersSubject.onNext(listOf(firstTestUserEntity, secondTestUserEntity))
         testSchedulerProvider.triggerActions()
-        verify(view, never()).displayUserList(any())
+        verify(view, never()).displayUsersList(any())
     }
 
-    private fun createPresenter(userRepository: UserRepository = mock()): ListPresenter {
-        return ListPresenter(
+    private fun createPresenter(userRepository: UserRepository = mock()) =
+        ListPresenter(
             userRepository = userRepository,
             schedulerProvider = testSchedulerProvider,
             view = view,
             listItemsFilter = ListItemsFilter()
         )
-    }
 }

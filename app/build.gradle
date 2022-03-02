@@ -3,8 +3,6 @@ plugins {
     alias libs.plugins.junit5.android
     alias libs.plugins.kotlin.android
     alias libs.plugins.kotlin.kapt
-
-    id "org.jetbrains.kotlin.android.extensions" version "1.6.10"
 }
 
 apply from: "../gradle/githubToken.gradle"
@@ -19,7 +17,7 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField("String", "GITHUB_TOKEN", getGithubToken("$rootDir/github_token.txt"))
+        buildConfigField("String", "GITHUB_TOKEN", getGithubToken())
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -31,6 +29,10 @@ android {
 
     kotlinOptions {
         jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+
+    buildFeatures {
+        dataBinding true
     }
 
     buildTypes {

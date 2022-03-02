@@ -93,10 +93,6 @@ class LocalUserRepositoryTest {
         verify(repositoryDao).insert(secondRepo, thirdRepo)
     }
 
-    private fun createRepository(
-        userDao: UserDao,
-        repositoryDao: RepositoryDao
-    ): LocalUserRepository {
-        return LocalUserRepository(userDao, repositoryDao, UserLocalMapper())
-    }
+    private fun createRepository(userDao: UserDao, repositoryDao: RepositoryDao) =
+        LocalUserRepository(userDao, repositoryDao, UserLocalMapper())
 }

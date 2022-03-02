@@ -16,7 +16,16 @@ class ListPresenter @Inject constructor(
 ) : ListContract.Presenter {
     private val compositeDisposable = CompositeDisposable()
 
-    override fun fetchUsers() {
+    override fun onCreate() {
+        fetchUsers()
+    }
+
+    override fun onRefresh() {
+        fetchUsers()
+        view.clearSearch()
+    }
+
+    private fun fetchUsers() {
         compositeDisposable.add(userRepository.retrieveUsers()
             .subscribeOn(schedulerProvider.io())
             .observeOn(schedulerProvider.ui(), true)
@@ -24,7 +33,7 @@ class ListPresenter @Inject constructor(
             .doOnTerminate { view.toggleRefreshing(isRefreshing = false) }
             .subscribeBy(
                 onNext = {
-                    view.displayUserList(it)
+                    view.displayUsersList(it)
                 },
                 onError = {
                     view.displayError(it.message.orEmpty())
@@ -33,14 +42,14 @@ class ListPresenter @Inject constructor(
             ))
     }
 
-    override fun filterUsers(searchQuery: String) {
+    override fun onSearchTextChange(searchQuery: String) {
         compositeDisposable.add(userRepository.retrieveUsersLocally()
             .subscribeOn(schedulerProvider.io())
             .map { users -> listItemsFilter.filterItems(searchQuery, users) }
             .observeOn(schedulerProvider.ui())
             .subscribeBy(
                 onSuccess = {
-                    view.displayUserList(it)
+                    view.displayUsersList(it)
                 },
                 onError = {
                     view.displayError(it.message.orEmpty())
@@ -49,7 +58,7 @@ class ListPresenter @Inject constructor(
             ))
     }
 
-    override fun releaseResources() {
+    override fun onClear() {
         compositeDisposable.clear()
     }
 

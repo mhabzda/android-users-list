@@ -48,12 +48,11 @@ class RemoteUserRepositoryTest {
         testObserver.assertError { it.message == "403 - rate limit" }
     }
 
-    private fun createRepository(userApi: UserApi): RemoteUserRepository {
-        return RemoteUserRepository(
+    private fun createRepository(userApi: UserApi) =
+        RemoteUserRepository(
             userApi = userApi,
             userRemoteMapper = UserRemoteMapper()
         )
-    }
 
     private val firstUserDto = UserRemoteDto("user1", "url")
     private val secondUserDto = UserRemoteDto("user2", "url")
@@ -65,17 +64,16 @@ class RemoteUserRepositoryTest {
     private val secondUserEntity = UserEntity("user2", "url", listOf("repo2"))
     private val thirdUserEntity = UserEntity("user3", "url", listOf("repo3"))
 
-    private fun mockWorkingUserApi(): UserApi {
-        return mock {
+    private fun mockWorkingUserApi(): UserApi =
+        mock {
             on { fetchUsers() } doReturn Single.just(listOf(firstUserDto, secondUserDto, thirdUserDto))
             on { fetchUserRepository("user1") } doReturn Single.just(listOf(firstRepositoryDto))
             on { fetchUserRepository("user2") } doReturn Single.just(listOf(secondRepositoryDto))
             on { fetchUserRepository("user3") } doReturn Single.just(listOf(thirdRepositoryDto))
         }
-    }
 
-    private fun mockUserApiWithErrorsDelay(): UserApi {
-        return mock {
+    private fun mockUserApiWithErrorsDelay(): UserApi =
+        mock {
             on { fetchUsers() } doReturn Single.just(
                 listOf(
                     firstUserDto,
@@ -97,12 +95,12 @@ class RemoteUserRepositoryTest {
                 110
             )
         }
-    }
 
-    private fun getRepositoriesSingleWithDelay(error: Throwable, delayMillis: Long)
-        : Single<List<UserRepositoryRemoteDto>> {
-        return Single.just(Any())
+    private fun getRepositoriesSingleWithDelay(
+        error: Throwable,
+        delayMillis: Long
+    ): Single<List<UserRepositoryRemoteDto>> =
+        Single.just(Any())
             .delay(delayMillis, TimeUnit.MILLISECONDS, testScheduler)
             .flatMap { Single.error(error) }
-    }
 }
