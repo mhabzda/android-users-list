@@ -10,5 +10,3 @@ fun ImageView.loadImage(url: String) {
         .placeholder(R.drawable.ic_launcher_foreground)
         .into(this)
 }
-
-const val EMPTY = ""

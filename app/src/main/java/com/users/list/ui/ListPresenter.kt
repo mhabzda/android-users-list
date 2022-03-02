@@ -4,7 +4,6 @@ import android.util.Log
 import com.users.list.model.domain.UserRepository
 import com.users.list.ui.filter.ListItemsFilter
 import com.users.list.ui.schedulers.SchedulerProvider
-import com.users.list.utils.EMPTY
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.subscribeBy
 import javax.inject.Inject
@@ -28,7 +27,7 @@ class ListPresenter @Inject constructor(
                     view.displayUserList(it)
                 },
                 onError = {
-                    view.displayError(it.message ?: EMPTY)
+                    view.displayError(it.message.orEmpty())
                     logError(it)
                 }
             ))
@@ -44,7 +43,7 @@ class ListPresenter @Inject constructor(
                     view.displayUserList(it)
                 },
                 onError = {
-                    view.displayError(it.message ?: EMPTY)
+                    view.displayError(it.message.orEmpty())
                     logError(it)
                 }
             ))

@@ -21,15 +21,12 @@ class UsersAdapter : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val inflater = LayoutInflater.from(parent.context)
-        val contactView = inflater.inflate(R.layout.item_user, parent, false)
-
-        return ViewHolder(contactView)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_user, parent, false)
+        return ViewHolder(view)
     }
 
-    override fun getItemCount(): Int {
-        return users.size
-    }
+    override fun getItemCount(): Int =
+        users.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bind(users[position])

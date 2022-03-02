@@ -31,15 +31,14 @@ class NetworkModule {
     }
 
     @Provides
-    fun provideUserApi(httpClient: OkHttpClient): UserApi {
-        return Retrofit.Builder()
+    fun provideUserApi(httpClient: OkHttpClient): UserApi =
+        Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .addConverterFactory(MoshiConverterFactory.create())
             .client(httpClient)
             .build()
             .create(UserApi::class.java)
-    }
 
     companion object {
         private const val BASE_URL = "https://api.github.com"

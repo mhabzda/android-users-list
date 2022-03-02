@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.users.R
 import com.users.list.model.domain.UserEntity
 import com.users.list.ui.adapter.UsersAdapter
-import com.users.list.utils.EMPTY
 import dagger.android.support.DaggerAppCompatActivity
 import javax.inject.Inject
 import kotlinx.android.synthetic.main.activity_list.swipe_refresh as swipeRefresh
 import kotlinx.android.synthetic.main.activity_list.users_list as usersRecyclerView
 
 class ListActivity : DaggerAppCompatActivity(), ListContract.View {
+
     @Inject
     lateinit var presenter: ListContract.Presenter
 
@@ -29,7 +29,7 @@ class ListActivity : DaggerAppCompatActivity(), ListContract.View {
         initializeRecyclerView()
         swipeRefresh.setOnRefreshListener {
             presenter.fetchUsers()
-            searchView.setQuery(EMPTY, false)
+            searchView.setQuery("", false)
         }
 
         presenter.fetchUsers()

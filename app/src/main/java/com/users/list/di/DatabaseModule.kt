@@ -13,25 +13,22 @@ import javax.inject.Singleton
 class DatabaseModule {
     @Singleton
     @Provides
-    fun provideDatabase(application: DaggerApplication): UserDatabase {
-        return Room.databaseBuilder(
+    fun provideDatabase(application: DaggerApplication): UserDatabase =
+        Room.databaseBuilder(
             application.applicationContext,
             UserDatabase::class.java,
             DATABASE_NAME
         ).fallbackToDestructiveMigration().build()
-    }
 
     @Singleton
     @Provides
-    fun provideUserDao(userDatabase: UserDatabase): UserDao {
-        return userDatabase.userDao()
-    }
+    fun provideUserDao(userDatabase: UserDatabase): UserDao =
+        userDatabase.userDao()
 
     @Singleton
     @Provides
-    fun provideRepositoryDao(userDatabase: UserDatabase): RepositoryDao {
-        return userDatabase.repositoryDao()
-    }
+    fun provideRepositoryDao(userDatabase: UserDatabase): RepositoryDao =
+        userDatabase.repositoryDao()
 
     companion object {
         private const val DATABASE_NAME = "user_database"

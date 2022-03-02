@@ -7,8 +7,8 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class FakeUserRepository @Inject constructor() : RemoteRepository {
-    override fun retrieveUsers(): Single<List<UserEntity>> {
-        return Single.just(
+    override fun retrieveUsers(): Single<List<UserEntity>> =
+        Single.just(
             listOf(
                 UserEntity("name1", "avatarUrl", listOf("repo1", "repo2", "repo3")),
                 UserEntity("name2", "avatarUrl", listOf("repo1", "repo2", "repo3")),
@@ -29,5 +29,4 @@ class FakeUserRepository @Inject constructor() : RemoteRepository {
                 UserEntity("name17", "avatarUrl", listOf("repo1", "repo2", "repo3"))
             )
         ).delay(500, TimeUnit.MILLISECONDS)
-    }
 }

@@ -10,32 +10,28 @@ class CompositeUserRepository @Inject constructor(
     private val localUserRepository: LocalRepository,
     private val remoteUserRepository: RemoteRepository
 ) : UserRepository {
-    override fun retrieveUsers(): Observable<List<UserEntity>> {
-        return Observable.mergeDelayError(
+    override fun retrieveUsers(): Observable<List<UserEntity>> =
+        Observable.mergeDelayError(
             localUserRepository.retrieveUsers().toObservable().map { UserData.Local(it) },
             remoteUserRepository.retrieveUsers().toObservable().map { UserData.Remote(it) }
         ).distinctUntilChanged { localData, remoteData ->
             localData.users.isContentTheSameAs(remoteData.users)
         }.saveRemoteData().map { it.users }
-    }
 
-    override fun retrieveUsersLocally(): Single<List<UserEntity>> {
-        return localUserRepository.retrieveUsers()
-    }
+    override fun retrieveUsersLocally(): Single<List<UserEntity>> =
+        localUserRepository.retrieveUsers()
 
-    private fun Observable<UserData>.saveRemoteData(): Observable<UserData> {
-        return doOnNext { userData ->
+    private fun Observable<UserData>.saveRemoteData(): Observable<UserData> =
+        doOnNext { userData ->
             if (userData is UserData.Remote) {
                 val users = userData.users
                 localUserRepository.insertUsers(users)
                 users.forEach { user -> localUserRepository.insertRepositories(user.name, user.repositories) }
             }
         }
-    }
 
-    private fun <T> List<T>.isContentTheSameAs(otherList: List<T>): Boolean {
-        return this.containsAll(otherList) && otherList.containsAll(this)
-    }
+    private fun <T> List<T>.isContentTheSameAs(otherList: List<T>): Boolean =
+        containsAll(otherList) && otherList.containsAll(this)
 
     private sealed class UserData(val users: List<UserEntity>) {
         class Remote(users: List<UserEntity>) : UserData(users)
