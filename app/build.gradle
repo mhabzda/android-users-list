@@ -56,6 +56,9 @@ dependencies {
     implementation libs.androidx.constraintlayout
     implementation libs.androidx.coreKtx
     implementation libs.androidx.recyclerview
+    kapt libs.androidx.room.compiler
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.rxJava
     implementation libs.androidx.swiperefreshlayout
 
     implementation libs.dagger
@@ -74,10 +77,6 @@ dependencies {
     implementation libs.retrofit
     implementation libs.retrofit.moshi
     implementation libs.retrofit.rxJava
-
-    kapt libs.room.compiler
-    implementation libs.room.runtime
-    implementation libs.room.rxJava
 
     implementation libs.glide
 

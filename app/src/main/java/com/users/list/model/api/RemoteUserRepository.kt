@@ -7,7 +7,6 @@ import com.users.list.model.domain.UserEntity
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.exceptions.CompositeException
-import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.flatMapIterable
 import javax.inject.Inject
 
@@ -28,9 +27,8 @@ class RemoteUserRepository @Inject constructor(
     private fun mergeUserWithRepositories(userRemoteDto: UserRemoteDto): Observable<UserEntity> {
         return Observable.zip(
             Observable.just(userRemoteDto),
-            fetchRepositories(userRemoteDto),
-            BiFunction { user, repositories -> userRemoteMapper.map(user, repositories) }
-        )
+            fetchRepositories(userRemoteDto)
+        ) { user, repositories -> userRemoteMapper.map(user, repositories) }
     }
 
     private fun fetchRepositories(user: UserRemoteDto): Observable<List<UserRepositoryRemoteDto>> {

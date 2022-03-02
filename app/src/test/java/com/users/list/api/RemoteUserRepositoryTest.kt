@@ -103,6 +103,6 @@ class RemoteUserRepositoryTest {
         : Single<List<UserRepositoryRemoteDto>> {
         return Single.just(Any())
             .delay(delayMillis, TimeUnit.MILLISECONDS, testScheduler)
-            .flatMap { Single.error<List<UserRepositoryRemoteDto>>(error) }
+            .flatMap { Single.error(error) }
     }
 }

@@ -10,19 +10,18 @@ androidx-appCompat = "1.4.1"
 androidx-constraintlayout = "2.1.3"
 androidx-coreKtx = "1.7.0"
 androidx-recyclerview = "1.2.1"
+androidx-room = "2.4.2"
 androidx-swiperefreshlayout = "1.1.0"
 # Dagger
 dagger = "2.41"
 # Rx
 rxAndroid = "2.1.1"
-rxJava = "2.2.19"
+rxJava = "2.2.21"
 rxKotlin = "2.4.0"
 # Network
 moshi = "1.13.0"
-okHttp = "4.6.0"
-retrofit = "2.8.1"
-# Room
-room = "2.2.5"
+okHttp = "4.9.3"
+retrofit = "2.9.0"
 # Glide
 glide = "4.13.1"
 # Testing
@@ -35,6 +34,9 @@ androidx-appCompat = { module = "androidx.appcompat:appcompat", version.ref = "a
 androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "androidx-constraintlayout" }
 androidx-coreKtx = { module = "androidx.core:core-ktx", version.ref = "androidx-coreKtx" }
 androidx-recyclerview = { module = "androidx.recyclerview:recyclerview", version.ref = "androidx-recyclerview" }
+androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "androidx-room" }
+androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "androidx-room" }
+androidx-room-rxJava = { module = "androidx.room:room-rxjava2", version.ref = "androidx-room" }
 androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefreshlayout", version.ref = "androidx-swiperefreshlayout" }
 # Dagger
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
@@ -53,10 +55,6 @@ okHttp = { module = "com.squareup.okhttp3:okhttp", version.ref = "okHttp" }
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-moshi = { module = "com.squareup.retrofit2:converter-moshi", version.ref = "retrofit" }
 retrofit-rxJava = { module = "com.squareup.retrofit2:adapter-rxjava2", version.ref = "retrofit" }
-# Room
-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-room-rxJava = { module = "androidx.room:room-rxjava2", version.ref = "room" }
 # Glide
 glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 # Testing

@@ -1,5 +1,6 @@
 package com.users.list.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import com.users.list.utils.loadImage
 class UsersAdapter : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {
 
     var users = emptyList<UserEntity>()
+        @SuppressLint("NotifyDataSetChanged")
         set(value) {
             field = value
             notifyDataSetChanged()

@@ -1,5 +1,6 @@
 package com.users.list.domain
 
+import android.annotation.SuppressLint
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
@@ -88,6 +89,7 @@ class CompositeUserRepositoryTest {
             .assertError(error)
     }
 
+    @SuppressLint("CheckResult")
     @Test
     fun `given can fetch only local data when retrieve users then do not save users`() {
         val localRepository: LocalRepository = mock {
@@ -106,6 +108,7 @@ class CompositeUserRepositoryTest {
         verify(localRepository, never()).insertRepositories(any(), any())
     }
 
+    @SuppressLint("CheckResult")
     @Test
     fun `given can fetch remote users when retrieve users then insert items to local repository`() {
         val localRepository: LocalRepository = mock {
