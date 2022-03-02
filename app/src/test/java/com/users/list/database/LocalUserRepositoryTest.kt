@@ -1,8 +1,5 @@
 package com.users.list.database
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import com.users.list.model.database.LocalUserRepository
 import com.users.list.model.database.dao.RepositoryDao
 import com.users.list.model.database.dao.UserDao
@@ -12,6 +9,9 @@ import com.users.list.model.database.mapper.UserLocalMapper
 import com.users.list.model.domain.UserEntity
 import io.reactivex.Single
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 
 class LocalUserRepositoryTest {
     private val firstLogin = "john"

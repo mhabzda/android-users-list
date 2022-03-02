@@ -26,7 +26,7 @@ retrofit = "2.9.0"
 glide = "4.13.1"
 # Testing
 junit5 = "5.8.2"
-mockito-kotlin = "2.2.0"
+mockito-kotlin = "4.0.0"
 
 [libraries]
 # AndroidX
@@ -61,7 +61,7 @@ glide = { module = "com.github.bumptech.glide:glide", version.ref = "glide" }
 junit5-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit5" }
 junit5-engine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit5" }
 junit5-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit5" }
-mockito-kotlin = { module = "com.nhaarman.mockitokotlin2:mockito-kotlin", version.ref = "mockito-kotlin" }
+mockito-kotlin = { module = "org.mockito.kotlin:mockito-kotlin", version.ref = "mockito-kotlin" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle" }

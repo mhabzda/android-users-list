@@ -1,7 +1,5 @@
 package com.users.list.api
 
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
 import com.users.list.model.api.RemoteUserRepository
 import com.users.list.model.api.UserApi
 import com.users.list.model.api.dtos.UserRemoteDto
@@ -11,6 +9,8 @@ import com.users.list.model.domain.UserEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.TestScheduler
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 import java.util.concurrent.TimeUnit
 
 class RemoteUserRepositoryTest {
