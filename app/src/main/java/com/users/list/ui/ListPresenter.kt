@@ -1,6 +1,7 @@
 package com.users.list.ui
 
 import android.util.Log
+import com.users.list.model.domain.UserEntity
 import com.users.list.model.domain.UserRepository
 import com.users.list.ui.filter.ListItemsFilter
 import com.users.list.ui.schedulers.SchedulerProvider
@@ -14,7 +15,9 @@ class ListPresenter @Inject constructor(
     private val view: ListContract.View,
     private val listItemsFilter: ListItemsFilter
 ) : ListContract.Presenter {
+
     private val compositeDisposable = CompositeDisposable()
+    private val usersList: MutableList<UserEntity> = mutableListOf()
 
     override fun onCreate() {
         fetchUsers()
@@ -33,36 +36,22 @@ class ListPresenter @Inject constructor(
             .doOnTerminate { view.toggleRefreshing(isRefreshing = false) }
             .subscribeBy(
                 onNext = {
+                    usersList.clear()
+                    usersList.addAll(it)
                     view.displayUsersList(it)
                 },
                 onError = {
                     view.displayError(it.message.orEmpty())
-                    logError(it)
+                    Log.e(ListPresenter::class.simpleName, "Error - ${it.message}", it)
                 }
             ))
     }
 
     override fun onSearchTextChange(searchQuery: String) {
-        compositeDisposable.add(userRepository.retrieveUsersLocally()
-            .subscribeOn(schedulerProvider.io())
-            .map { users -> listItemsFilter.filterItems(searchQuery, users) }
-            .observeOn(schedulerProvider.ui())
-            .subscribeBy(
-                onSuccess = {
-                    view.displayUsersList(it)
-                },
-                onError = {
-                    view.displayError(it.message.orEmpty())
-                    logError(it)
-                }
-            ))
+        view.displayUsersList(listItemsFilter.filterItems(searchQuery, usersList))
     }
 
     override fun onClear() {
         compositeDisposable.clear()
-    }
-
-    private fun logError(throwable: Throwable) {
-        Log.e(ListPresenter::class.simpleName, "Error - ${throwable.message}", throwable)
     }
 }

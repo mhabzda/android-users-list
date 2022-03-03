@@ -6,7 +6,6 @@ import com.users.list.testutils.TestUserData.firstTestUserEntity
 import com.users.list.testutils.TestUserData.secondTestUserEntity
 import com.users.list.ui.filter.ListItemsFilter
 import io.reactivex.Observable
-import io.reactivex.Single
 import io.reactivex.subjects.PublishSubject
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.InOrderOnType
@@ -78,28 +77,16 @@ class ListPresenterTest {
     }
 
     @Test
-    fun `given can retrieve users locally when search text change then display only filtered users`() {
+    fun `display filtered users when text is changed`() {
         val presenter = createPresenter(userRepository = mock {
-            on { retrieveUsersLocally() } doReturn Single.just(listOf(firstTestUserEntity, secondTestUserEntity))
+            on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
         })
+        presenter.onCreate()
+        testSchedulerProvider.triggerActions()
 
         presenter.onSearchTextChange("john")
-        testSchedulerProvider.triggerActions()
 
         verify(view).displayUsersList(listOf(firstTestUserEntity))
-    }
-
-    @Test
-    fun `given cannot retrieve users locally when search text change then display error`() {
-        val errorMessage = "error while fetching users locally"
-        val presenter = createPresenter(userRepository = mock {
-            on { retrieveUsersLocally() } doReturn Single.error(Throwable(errorMessage))
-        })
-
-        presenter.onSearchTextChange("john")
-        testSchedulerProvider.triggerActions()
-
-        verify(view).displayError(errorMessage)
     }
 
     @Test

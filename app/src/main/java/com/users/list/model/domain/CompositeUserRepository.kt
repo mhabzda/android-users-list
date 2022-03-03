@@ -3,7 +3,6 @@ package com.users.list.model.domain
 import com.users.list.model.api.RemoteRepository
 import com.users.list.model.database.LocalRepository
 import io.reactivex.Observable
-import io.reactivex.Single
 import javax.inject.Inject
 
 class CompositeUserRepository @Inject constructor(
@@ -17,9 +16,6 @@ class CompositeUserRepository @Inject constructor(
         ).distinctUntilChanged { localData, remoteData ->
             localData.users.isContentTheSameAs(remoteData.users)
         }.saveRemoteData().map { it.users }
-
-    override fun retrieveUsersLocally(): Single<List<UserEntity>> =
-        localUserRepository.retrieveUsers()
 
     private fun Observable<UserData>.saveRemoteData(): Observable<UserData> =
         doOnNext { userData ->

@@ -128,35 +128,6 @@ class CompositeUserRepositoryTest {
         verify(localRepository).insertRepositories(secondName, secondRepos)
     }
 
-    @Test
-    fun `given local data present when retrieve users locally then emit users`() {
-        val repository = createRepository(
-            localUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.just(listOf(firstUserEntity, secondUserEntity))
-            },
-            remoteUserRepository = mock()
-        )
-
-        repository.retrieveUsersLocally()
-            .test()
-            .assertValue(listOf(firstUserEntity, secondUserEntity))
-    }
-
-    @Test
-    fun `given no local data when retrieve users locally then emit error`() {
-        val error = Throwable("no local users")
-        val repository = createRepository(
-            localUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.error(error)
-            },
-            remoteUserRepository = mock()
-        )
-
-        repository.retrieveUsersLocally()
-            .test()
-            .assertError(error)
-    }
-
     private fun createRepository(localUserRepository: LocalRepository, remoteUserRepository: RemoteRepository) =
         CompositeUserRepository(localUserRepository, remoteUserRepository)
 }
