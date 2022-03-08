@@ -29,7 +29,7 @@ class ListActivity : DaggerAppCompatActivity(), ListContract.View {
         initializeList()
         binding.listSwipeRefresh.setOnRefreshListener { presenter.onRefresh() }
 
-        presenter.onCreate()
+        presenter.onCreate(this)
     }
 
     private fun initializeList() = with(binding) {

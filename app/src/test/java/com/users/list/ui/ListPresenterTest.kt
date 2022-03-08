@@ -28,7 +28,7 @@ class ListPresenterTest {
             on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
         })
 
-        presenter.onCreate()
+        presenter.onCreate(view)
         testSchedulerProvider.triggerActions()
 
         verify(view).displayUsersList(listOf(firstTestUserEntity, secondTestUserEntity))
@@ -41,7 +41,7 @@ class ListPresenterTest {
             on { retrieveUsers() } doReturn Observable.error(Throwable(errorMessage))
         })
 
-        presenter.onCreate()
+        presenter.onCreate(view)
         testSchedulerProvider.triggerActions()
 
         verify(view).displayError(errorMessage)
@@ -53,7 +53,7 @@ class ListPresenterTest {
             on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
         })
 
-        presenter.onCreate()
+        presenter.onCreate(view)
         testSchedulerProvider.triggerActions()
 
         val inOrder = InOrderOnType(view)
@@ -66,7 +66,7 @@ class ListPresenterTest {
         val presenter = createPresenter(userRepository = mock {
             on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
         })
-        presenter.onCreate()
+        presenter.onCreate(view)
         testSchedulerProvider.triggerActions()
 
         presenter.onRefresh()
@@ -81,7 +81,7 @@ class ListPresenterTest {
         val presenter = createPresenter(userRepository = mock {
             on { retrieveUsers() } doReturn Observable.just(listOf(firstTestUserEntity, secondTestUserEntity))
         })
-        presenter.onCreate()
+        presenter.onCreate(view)
         testSchedulerProvider.triggerActions()
 
         presenter.onSearchTextChange("john")
@@ -96,7 +96,7 @@ class ListPresenterTest {
             on { retrieveUsers() } doReturn usersSubject.hide()
         })
 
-        presenter.onCreate()
+        presenter.onCreate(view)
         testSchedulerProvider.triggerActions()
         usersSubject.onNext(listOf(firstTestUserEntity, secondTestUserEntity))
         testSchedulerProvider.triggerActions()
@@ -113,7 +113,6 @@ class ListPresenterTest {
         ListPresenter(
             userRepository = userRepository,
             schedulerProvider = testSchedulerProvider,
-            view = view,
             listItemsFilter = ListItemsFilter()
         )
 }

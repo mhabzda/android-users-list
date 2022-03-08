@@ -11,7 +11,7 @@ interface ListContract {
     }
 
     interface Presenter {
-        fun onCreate()
+        fun onCreate(view: View)
         fun onRefresh()
         fun onSearchTextChange(searchQuery: String)
         fun onClear()
