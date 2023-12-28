@@ -5,15 +5,22 @@ plugins {
     alias libs.plugins.kotlin.kapt
 }
 
-apply from: "../gradle/githubToken.gradle"
+apply from: "$rootDir/gradle/githubToken.gradle"
+apply from: "$rootDir/gradle/config.gradle"
+
+kotlin {
+    jvmToolchain config.jvmToolchain
+}
 
 android {
-    compileSdkVersion 31
+    namespace 'com.users'
+
+    compileSdk config.compileSdkVersion
 
     defaultConfig {
         applicationId "com.users"
-        minSdkVersion 23
-        targetSdkVersion 31
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
         versionCode 1
         versionName "1.0"
 
@@ -22,17 +29,9 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
-
     buildFeatures {
         dataBinding true
+        buildConfig true
     }
 
     buildTypes {
@@ -44,7 +43,8 @@ android {
         release {
             debuggable false
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 
