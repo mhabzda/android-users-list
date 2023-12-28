@@ -53,4 +53,8 @@ dependencies {
     implementation libs.hilt.android
     kapt libs.hilt.android.compiler
     kapt libs.hilt.compiler
+
+    testImplementation libs.junit5.api
+    testRuntimeOnly libs.junit5.engine
+    testImplementation libs.mockito.kotlin
 }

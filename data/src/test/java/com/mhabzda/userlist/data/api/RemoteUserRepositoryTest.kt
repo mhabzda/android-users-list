@@ -1,11 +1,9 @@
-package com.mhabzda.userlist.api
+package com.mhabzda.userlist.data.api
 
-import com.mhabzda.userlist.model.api.RemoteUserRepository
-import com.mhabzda.userlist.model.api.UserApi
-import com.mhabzda.userlist.model.api.dtos.UserRemoteDto
-import com.mhabzda.userlist.model.api.dtos.UserRepositoryRemoteDto
-import com.mhabzda.userlist.model.api.mapper.UserRemoteMapper
-import com.mhabzda.userlist.model.domain.UserEntity
+import com.mhabzda.userlist.data.api.dtos.UserRemoteDto
+import com.mhabzda.userlist.data.api.dtos.UserRepositoryRemoteDto
+import com.mhabzda.userlist.data.api.mapper.UserRemoteMapper
+import com.mhabzda.userlist.domain.model.UserEntity
 import io.reactivex.Single
 import io.reactivex.schedulers.TestScheduler
 import org.junit.jupiter.api.Test

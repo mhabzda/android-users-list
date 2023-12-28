@@ -1,7 +1,7 @@
 package com.mhabzda.userlist.ui
 
-import com.mhabzda.userlist.model.domain.UserEntity
-import com.mhabzda.userlist.model.domain.UserRepository
+import com.mhabzda.userlist.domain.UserRepository
+import com.mhabzda.userlist.domain.model.UserEntity
 import com.mhabzda.userlist.testutils.TestUserData.firstTestUserEntity
 import com.mhabzda.userlist.testutils.TestUserData.secondTestUserEntity
 import com.mhabzda.userlist.ui.filter.ListItemsFilter

@@ -1,10 +1,9 @@
-package com.mhabzda.userlist.domain
+package com.mhabzda.userlist.data
 
 import android.annotation.SuppressLint
-import com.mhabzda.userlist.model.api.RemoteRepository
-import com.mhabzda.userlist.model.database.LocalRepository
-import com.mhabzda.userlist.model.domain.CompositeUserRepository
-import com.mhabzda.userlist.model.domain.UserEntity
+import com.mhabzda.userlist.data.api.RemoteRepository
+import com.mhabzda.userlist.data.database.LocalRepository
+import com.mhabzda.userlist.domain.model.UserEntity
 import io.reactivex.Single
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any

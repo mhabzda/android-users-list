@@ -1,6 +1,6 @@
 package com.mhabzda.userlist.ui
 
-import com.mhabzda.userlist.model.domain.UserEntity
+import com.mhabzda.userlist.domain.model.UserEntity
 import com.mhabzda.userlist.testutils.BaseInputProvider
 import com.mhabzda.userlist.testutils.TestUserData.firstTestUserEntity
 import com.mhabzda.userlist.testutils.TestUserData.secondTestUserEntity

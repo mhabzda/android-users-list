@@ -1,12 +1,11 @@
-package com.mhabzda.userlist.database
+package com.mhabzda.userlist.data.database
 
-import com.mhabzda.userlist.model.database.LocalUserRepository
-import com.mhabzda.userlist.model.database.dao.RepositoryDao
-import com.mhabzda.userlist.model.database.dao.UserDao
-import com.mhabzda.userlist.model.database.dtos.UserLocalDto
-import com.mhabzda.userlist.model.database.dtos.UserRepositoryLocalDto
-import com.mhabzda.userlist.model.database.mapper.UserLocalMapper
-import com.mhabzda.userlist.model.domain.UserEntity
+import com.mhabzda.userlist.data.database.dao.RepositoryDao
+import com.mhabzda.userlist.data.database.dao.UserDao
+import com.mhabzda.userlist.data.database.dtos.UserLocalDto
+import com.mhabzda.userlist.data.database.dtos.UserRepositoryLocalDto
+import com.mhabzda.userlist.data.database.mapper.UserLocalMapper
+import com.mhabzda.userlist.domain.model.UserEntity
 import io.reactivex.Single
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn
