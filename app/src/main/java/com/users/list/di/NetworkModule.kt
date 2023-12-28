@@ -4,6 +4,8 @@ import com.users.BuildConfig
 import com.users.list.model.api.UserApi
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -11,6 +13,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 @Module
+@InstallIn(SingletonComponent::class)
 class NetworkModule {
     @Provides
     fun provideHttpClient(): OkHttpClient {

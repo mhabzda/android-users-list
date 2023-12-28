@@ -3,16 +3,18 @@ package com.users.list.ui
 import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.users.R
 import com.users.databinding.ActivityListBinding
 import com.users.list.model.domain.UserEntity
 import com.users.list.ui.adapter.UsersAdapter
-import dagger.android.support.DaggerAppCompatActivity
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class ListActivity : DaggerAppCompatActivity(), ListContract.View {
+@AndroidEntryPoint
+class ListActivity : AppCompatActivity(), ListContract.View {
 
     @Inject
     lateinit var presenter: ListContract.Presenter

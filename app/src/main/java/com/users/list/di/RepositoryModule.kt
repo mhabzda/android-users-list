@@ -8,8 +8,11 @@ import com.users.list.model.domain.CompositeUserRepository
 import com.users.list.model.domain.UserRepository
 import dagger.Binds
 import dagger.Module
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 
 @Module
+@InstallIn(SingletonComponent::class)
 abstract class RepositoryModule {
     @Binds
     abstract fun provideLocalRepository(localUserRepository: LocalUserRepository): LocalRepository

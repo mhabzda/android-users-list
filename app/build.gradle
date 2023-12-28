@@ -3,6 +3,8 @@ plugins {
     alias libs.plugins.junit5.android
     alias libs.plugins.kotlin.android
     alias libs.plugins.kotlin.kapt
+    alias libs.plugins.ksp
+    alias libs.plugins.hilt
 }
 
 apply from: "$rootDir/gradle/githubToken.gradle"
@@ -63,18 +65,16 @@ dependencies {
     implementation libs.androidx.room.rxJava
     implementation libs.androidx.swiperefreshlayout
 
-    implementation libs.dagger
-    implementation libs.dagger.android
-    kapt libs.dagger.compiler
-    kapt libs.dagger.processor
-    implementation libs.dagger.support
+    implementation libs.hilt.android
+    kapt libs.hilt.android.compiler
+    kapt libs.hilt.compiler
 
     implementation libs.rxAndroid
     implementation libs.rxJava
     implementation libs.rxKotlin
 
     implementation libs.moshi
-    kapt libs.moshi.codegen
+    ksp libs.moshi.codegen
     implementation libs.okHttp
     implementation libs.retrofit
     implementation libs.retrofit.moshi
