@@ -15,12 +15,12 @@ kotlin {
 }
 
 android {
-    namespace 'com.users'
+    namespace 'com.mhabzda.userlist'
 
     compileSdk config.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.users"
+        applicationId "com.mhabzda.userlist"
         minSdkVersion config.minSdkVersion
         targetSdkVersion config.targetSdkVersion
         versionCode 1
