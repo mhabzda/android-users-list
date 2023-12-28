@@ -8,7 +8,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.mhabzda.userlist.R
 import com.mhabzda.userlist.databinding.ActivityListBinding
-import com.mhabzda.userlist.model.domain.UserEntity
+import com.mhabzda.userlist.domain.model.UserEntity
 import com.mhabzda.userlist.ui.adapter.UsersAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject

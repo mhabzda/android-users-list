@@ -5,7 +5,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.mhabzda.userlist.databinding.ItemUserBinding
-import com.mhabzda.userlist.model.domain.UserEntity
+import com.mhabzda.userlist.domain.model.UserEntity
 import com.mhabzda.userlist.utils.loadImage
 
 class UsersAdapter : RecyclerView.Adapter<UsersAdapter.ViewHolder>() {

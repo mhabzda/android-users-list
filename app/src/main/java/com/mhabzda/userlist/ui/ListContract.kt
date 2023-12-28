@@ -1,6 +1,6 @@
 package com.mhabzda.userlist.ui
 
-import com.mhabzda.userlist.model.domain.UserEntity
+import com.mhabzda.userlist.domain.model.UserEntity
 
 interface ListContract {
     interface View {

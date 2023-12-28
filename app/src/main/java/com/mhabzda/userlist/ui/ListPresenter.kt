@@ -1,8 +1,8 @@
 package com.mhabzda.userlist.ui
 
 import android.util.Log
-import com.mhabzda.userlist.model.domain.UserEntity
-import com.mhabzda.userlist.model.domain.UserRepository
+import com.mhabzda.userlist.domain.UserRepository
+import com.mhabzda.userlist.domain.model.UserEntity
 import com.mhabzda.userlist.ui.filter.ListItemsFilter
 import com.mhabzda.userlist.ui.schedulers.SchedulerProvider
 import io.reactivex.disposables.CompositeDisposable

@@ -1,0 +1,26 @@
+plugins {
+    id 'java-library'
+    alias libs.plugins.kotlin.jvm
+}
+
+apply from: "$rootDir/gradle/config.gradle"
+
+java {
+    sourceCompatibility = config.javaVersion
+    targetCompatibility = config.javaVersion
+}
+
+test {
+    useJUnitPlatform()
+}
+
+dependencies {
+    implementation libs.rxJava
+    implementation libs.rxKotlin
+
+    compileOnly libs.javax.inject
+
+    testImplementation libs.junit5.api
+    testRuntimeOnly libs.junit5.engine
+    testImplementation libs.mockito.kotlin
+}

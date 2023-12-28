@@ -16,6 +16,7 @@ androidx-swiperefreshlayout = "1.1.0"
 # Hilt
 hilt = "2.50"
 hilt-compiler = "1.1.0"
+javax-inject = "1"
 # Rx
 rxAndroid = "2.1.1"
 rxJava = "2.2.21"
@@ -32,9 +33,11 @@ mockito-kotlin = "5.2.1"
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "android-gradle" }
+android-library = { id = "com.android.library", version.ref = "android-gradle" }
 junit5-android = { id = "de.mannodermaus.android-junit5", version.ref = "junit5-android" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
@@ -54,6 +57,7 @@ androidx-swiperefreshlayout = { module = "androidx.swiperefreshlayout:swiperefre
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-compiler = { module = "androidx.hilt:hilt-compiler", version.ref = "hilt-compiler" }
+javax-inject = { module = "javax.inject:javax.inject", version.ref = "javax-inject" }
 # Rx
 rxAndroid = { module = "io.reactivex.rxjava2:rxandroid", version.ref = "rxAndroid" }
 rxJava = { module = "io.reactivex.rxjava2:rxjava", version.ref = "rxJava" }

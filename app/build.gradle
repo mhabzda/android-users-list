@@ -7,7 +7,6 @@ plugins {
     alias libs.plugins.hilt
 }
 
-apply from: "$rootDir/gradle/githubToken.gradle"
 apply from: "$rootDir/gradle/config.gradle"
 
 kotlin {
@@ -26,14 +25,11 @@ android {
         versionCode 1
         versionName "1.0"
 
-        buildConfigField("String", "GITHUB_TOKEN", getGithubToken("$rootDir"))
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildFeatures {
         dataBinding true
-        buildConfig true
     }
 
     buildTypes {
@@ -56,13 +52,13 @@ android {
 }
 
 dependencies {
+    implementation project(':domain')
+    implementation project(':data')
+
     implementation libs.androidx.appCompat
     implementation libs.androidx.constraintlayout
     implementation libs.androidx.coreKtx
     implementation libs.androidx.recyclerview
-    kapt libs.androidx.room.compiler
-    implementation libs.androidx.room.runtime
-    implementation libs.androidx.room.rxJava
     implementation libs.androidx.swiperefreshlayout
 
     implementation libs.hilt.android
@@ -72,13 +68,6 @@ dependencies {
     implementation libs.rxAndroid
     implementation libs.rxJava
     implementation libs.rxKotlin
-
-    implementation libs.moshi
-    ksp libs.moshi.codegen
-    implementation libs.okHttp
-    implementation libs.retrofit
-    implementation libs.retrofit.moshi
-    implementation libs.retrofit.rxJava
 
     implementation libs.glide
 
