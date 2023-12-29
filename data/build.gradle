@@ -46,7 +46,6 @@ dependencies {
     implementation libs.okHttp
     implementation libs.retrofit
     implementation libs.retrofit.moshi
-    implementation libs.retrofit.rxJava
 
     implementation libs.androidx.room.runtime
     implementation libs.androidx.room.ktx
@@ -56,4 +55,5 @@ dependencies {
     testRuntimeOnly libs.junit5.engine
     testImplementation libs.mockito.kotlin
     testImplementation libs.coroutines.test
+    testImplementation libs.turbine
 }

@@ -36,6 +36,7 @@ class ListViewModel @Inject constructor(
     private fun fetchUsers() {
         val handler = CoroutineExceptionHandler { _, error ->
             emit(DisplayError(error.message.orEmpty()))
+            updateState { copy(isRefreshing = false) }
             Log.e(ListViewModel::class.simpleName, "Fetch Error - ${error.message}", error)
         }
         viewModelScope.launch(handler) {

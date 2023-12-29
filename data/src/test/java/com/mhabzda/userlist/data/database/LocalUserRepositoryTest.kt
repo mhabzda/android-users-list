@@ -2,13 +2,15 @@ package com.mhabzda.userlist.data.database
 
 import com.mhabzda.userlist.data.database.dao.RepositoryDao
 import com.mhabzda.userlist.data.database.dao.UserDao
-import com.mhabzda.userlist.data.database.dtos.UserLocalDto
-import com.mhabzda.userlist.data.database.dtos.UserRepositoryLocalDto
 import com.mhabzda.userlist.data.database.mapper.UserLocalMapper
+import com.mhabzda.userlist.data.database.model.UserLocalDto
+import com.mhabzda.userlist.data.database.model.UserRepositoryLocalDto
 import com.mhabzda.userlist.domain.model.UserEntity
-import io.reactivex.Single
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 
@@ -25,53 +27,71 @@ class LocalUserRepositoryTest {
     private val secondUserEntity = UserEntity(secondLogin, "url", listOf("repo2", "repo3"))
 
     @Test
-    fun `given local data present when retrieve users then emit local data`() {
+    fun `GIVEN local data present WHEN retrieve users THEN emit local data`() = runTest {
         val repository = createRepository(
             userDao = mock {
-                on { getUsers() } doReturn Single.just(listOf(firstUserDto, secondUserDto))
+                onBlocking { getUsers() } doReturn listOf(firstUserDto, secondUserDto)
             },
             repositoryDao = mock {
-                on { getRepositories(firstLogin) } doReturn Single.just(listOf(firstRepo))
-                on { getRepositories(secondLogin) } doReturn Single.just(listOf(secondRepo, thirdRepo))
+                onBlocking { getRepositories(firstLogin) } doReturn listOf(firstRepo)
+                onBlocking { getRepositories(secondLogin) } doReturn listOf(secondRepo, thirdRepo)
             }
         )
 
-        repository.retrieveUsers()
-            .test()
-            .assertValue(listOf(firstUserEntity, secondUserEntity))
+        val result = repository.retrieveUsers()
+
+        assertEquals(listOf(firstUserEntity, secondUserEntity), result)
     }
 
     @Test
-    fun `given no local data present when retrieve users then emit empty list`() {
+    fun `GIVEN no local data present WHEN retrieve users THEN emit empty list`() = runTest {
         val repository = createRepository(
             userDao = mock {
-                on { getUsers() } doReturn Single.just(emptyList())
+                onBlocking { getUsers() } doReturn emptyList()
             },
-            repositoryDao = mock()
+            repositoryDao = mock(),
         )
 
-        repository.retrieveUsers()
-            .test()
-            .assertValue(emptyList())
+        val result = repository.retrieveUsers()
+
+        assertEquals(emptyList<UserEntity>(), result)
     }
 
     @Test
-    fun `given error when retrieve users then emit error`() {
-        val error = Throwable("error while fetching local data")
+    fun `GIVEN users error WHEN retrieve users THEN emit error`() = runTest {
+        val errorMessage = "error while fetching local data"
         val repository = createRepository(
             userDao = mock {
-                on { getUsers() } doReturn Single.error(error)
+                onBlocking { getUsers() } doThrow RuntimeException(errorMessage)
             },
-            repositoryDao = mock()
+            repositoryDao = mock(),
         )
 
-        repository.retrieveUsers()
-            .test()
-            .assertError(error)
+        val result = runCatching { repository.retrieveUsers() }
+
+        assertEquals(errorMessage, result.exceptionOrNull()?.message)
     }
 
     @Test
-    fun `when insert users then insert users using DAO`() {
+    fun `GIVEN repositories error WHEN retrieve users THEN emit error`() = runTest {
+        val errorMessage = "error while fetching local data"
+        val repository = createRepository(
+            userDao = mock {
+                onBlocking { getUsers() } doReturn listOf(firstUserDto, secondUserDto)
+            },
+            repositoryDao = mock {
+                onBlocking { getRepositories(firstLogin) } doReturn listOf(firstRepo)
+                onBlocking { getRepositories(secondLogin) } doThrow RuntimeException(errorMessage)
+            }
+        )
+
+        val result = runCatching { repository.retrieveUsers() }
+
+        assertEquals(errorMessage, result.exceptionOrNull()?.message)
+    }
+
+    @Test
+    fun `WHEN insert users THEN insert users using DAO`() = runTest {
         val userDao: UserDao = mock()
         val repository = createRepository(userDao = userDao, repositoryDao = mock())
 
@@ -81,7 +101,7 @@ class LocalUserRepositoryTest {
     }
 
     @Test
-    fun `when insert repositories then insert repositories using DAO`() {
+    fun `WHEN insert repositories THEN insert repositories using DAO`() = runTest {
         val repositoryDao: RepositoryDao = mock()
         val repository = createRepository(userDao = mock(), repositoryDao = repositoryDao)
 
@@ -93,5 +113,9 @@ class LocalUserRepositoryTest {
     }
 
     private fun createRepository(userDao: UserDao, repositoryDao: RepositoryDao) =
-        LocalUserRepository(userDao, repositoryDao, UserLocalMapper())
+        LocalUserRepository(
+            userDao = userDao,
+            repositoryDao = repositoryDao,
+            userLocalMapper = UserLocalMapper(),
+        )
 }

@@ -1,49 +1,47 @@
 package com.mhabzda.userlist.data.api
 
-import com.mhabzda.userlist.data.api.dtos.UserRemoteDto
-import com.mhabzda.userlist.data.api.dtos.UserRepositoryRemoteDto
 import com.mhabzda.userlist.data.api.mapper.UserRemoteMapper
+import com.mhabzda.userlist.data.api.model.UserRemoteDto
+import com.mhabzda.userlist.data.api.model.UserRepositoryRemoteDto
 import com.mhabzda.userlist.domain.model.UserEntity
-import io.reactivex.Single
-import io.reactivex.schedulers.TestScheduler
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.mock
-import java.util.concurrent.TimeUnit
 
 class RemoteUserRepositoryTest {
-    private val testScheduler = TestScheduler()
 
     @Test
-    fun `given can retrieve all info when retrieving users then return list of users`() {
-        val repository = createRepository(userApi = mockWorkingUserApi())
+    fun `GIVEN can retrieve everything WHEN retrieving users THEN return list of users`() = runTest {
+        val repository = createRepository(userApi = mockUserApi())
 
-        repository.retrieveUsers()
-            .test()
-            .assertValue(listOf(firstUserEntity, secondUserEntity, thirdUserEntity))
+        val result = repository.retrieveUsers()
+
+        assertEquals(listOf(firstUserEntity, secondUserEntity, thirdUserEntity), result)
     }
 
     @Test
-    fun `given cannot retrieve user list when retrieving users then throw error`() {
-        val error = Throwable("cannot fetch users")
+    fun `GIVEN cannot retrieve user list WHEN retrieving users THEN throw an error`() = runTest {
+        val errorMessage = "cannot fetch users"
         val repository = createRepository(userApi = mock {
-            on { fetchUsers() } doReturn Single.error(error)
+            onBlocking { fetchUsers() } doThrow RuntimeException(errorMessage)
         })
 
-        repository.retrieveUsers()
-            .test()
-            .assertError(error)
+        val result = runCatching { repository.retrieveUsers() }
+
+        assertEquals(errorMessage, result.exceptionOrNull()?.message)
     }
 
     @Test
-    fun `given multiple repositories call fails when retrieving users then throw single error after delay`() {
-        val repository = createRepository(userApi = mockUserApiWithErrorsDelay())
+    fun `GIVEN multiple repositories call fails WHEN retrieving users THEN throw an error`() = runTest {
+        val errorMessage = "cannot fetch a repository"
+        val repository = createRepository(userApi = mockUserApiWithRepositoryError(RuntimeException(errorMessage)))
 
-        val testObserver = repository.retrieveUsers().test()
+        val result = runCatching { repository.retrieveUsers() }
 
-        testObserver.assertNoErrors()
-        testScheduler.advanceTimeBy(110, TimeUnit.MILLISECONDS)
-        testObserver.assertError { it.message == "403 - rate limit" }
+        assertEquals(errorMessage, result.exceptionOrNull()?.message)
     }
 
     private fun createRepository(userApi: UserApi) =
@@ -62,43 +60,25 @@ class RemoteUserRepositoryTest {
     private val secondUserEntity = UserEntity("user2", "url", listOf("repo2"))
     private val thirdUserEntity = UserEntity("user3", "url", listOf("repo3"))
 
-    private fun mockWorkingUserApi(): UserApi =
+    private fun mockUserApi(): UserApi =
         mock {
-            on { fetchUsers() } doReturn Single.just(listOf(firstUserDto, secondUserDto, thirdUserDto))
-            on { fetchUserRepository("user1") } doReturn Single.just(listOf(firstRepositoryDto))
-            on { fetchUserRepository("user2") } doReturn Single.just(listOf(secondRepositoryDto))
-            on { fetchUserRepository("user3") } doReturn Single.just(listOf(thirdRepositoryDto))
+            onBlocking { fetchUsers() } doReturn listOf(firstUserDto, secondUserDto, thirdUserDto)
+            onBlocking { fetchUserRepository("user1") } doReturn listOf(firstRepositoryDto)
+            onBlocking { fetchUserRepository("user2") } doReturn listOf(secondRepositoryDto)
+            onBlocking { fetchUserRepository("user3") } doReturn listOf(thirdRepositoryDto)
         }
 
-    private fun mockUserApiWithErrorsDelay(): UserApi =
+    private fun mockUserApiWithRepositoryError(error: Exception): UserApi =
         mock {
-            on { fetchUsers() } doReturn Single.just(
-                listOf(
-                    firstUserDto,
-                    secondUserDto,
-                    thirdUserDto,
-                    UserRemoteDto("user4", "url"),
-                    UserRemoteDto("user5", "url")
-                )
+            onBlocking { fetchUsers() } doReturn listOf(
+                firstUserDto,
+                secondUserDto,
+                thirdUserDto,
+                UserRemoteDto("user4", "url"),
+                UserRemoteDto("user5", "url"),
             )
-            on { fetchUserRepository("user1") } doReturn Single.just(listOf(firstRepositoryDto))
-            on { fetchUserRepository("user2") } doReturn Single.just(listOf(secondRepositoryDto))
-            on { fetchUserRepository("user3") } doReturn Single.error(Throwable("403 - rate limit"))
-            on { fetchUserRepository("user4") } doReturn getRepositoriesSingleWithDelay(
-                Throwable("403 - rate limit"),
-                100
-            )
-            on { fetchUserRepository("user5") } doReturn getRepositoriesSingleWithDelay(
-                Throwable("403 - rate limit"),
-                110
-            )
+            onBlocking { fetchUserRepository("user1") } doReturn listOf(firstRepositoryDto)
+            onBlocking { fetchUserRepository("user2") } doReturn listOf(secondRepositoryDto)
+            onBlocking { fetchUserRepository("user3") } doThrow error
         }
-
-    private fun getRepositoriesSingleWithDelay(
-        error: Throwable,
-        delayMillis: Long,
-    ): Single<List<UserRepositoryRemoteDto>> =
-        Single.just(Any())
-            .delay(delayMillis, TimeUnit.MILLISECONDS, testScheduler)
-            .flatMap { Single.error(error) }
 }

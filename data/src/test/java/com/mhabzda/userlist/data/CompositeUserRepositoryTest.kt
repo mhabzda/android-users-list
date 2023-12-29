@@ -1,13 +1,16 @@
 package com.mhabzda.userlist.data
 
-import android.annotation.SuppressLint
-import com.mhabzda.userlist.data.api.RemoteRepository
-import com.mhabzda.userlist.data.database.LocalRepository
+import app.cash.turbine.test
+import com.mhabzda.userlist.data.api.RemoteUserRepository
+import com.mhabzda.userlist.data.database.LocalUserRepository
 import com.mhabzda.userlist.domain.model.UserEntity
-import io.reactivex.Single
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.test.runTest
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.doThrow
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
@@ -21,112 +24,113 @@ class CompositeUserRepositoryTest {
     private val secondUserEntity = UserEntity(secondName, "url", secondRepos)
 
     @Test
-    fun `given no local data cached when retrieve users then emit empty list and remote items`() {
+    fun `GIVEN no local data cached WHEN retrieve users THEN emit empty list and remote items`() = runTest {
         val repository = createRepository(
             localUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.just(emptyList())
+                onBlocking { retrieveUsers() } doReturn emptyList()
             },
             remoteUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.just(listOf(firstUserEntity, secondUserEntity))
+                onBlocking { retrieveUsers() } doReturn listOf(firstUserEntity, secondUserEntity)
             }
         )
 
-        repository.retrieveUsers()
-            .test()
-            .assertValues(listOf(), listOf(firstUserEntity, secondUserEntity))
+        repository.retrieveUsers().test {
+            assertEquals(emptyList<UserEntity>(), awaitItem())
+            assertEquals(listOf(firstUserEntity, secondUserEntity), awaitItem())
+            awaitComplete()
+        }
     }
 
     @Test
-    fun `given local and remote data are the same but in different order when retrieve users then emit only single list`() {
+    fun `GIVEN local and remote data are the same but in different order WHEN retrieve users THEN emit only single list`() = runTest {
         val repository = createRepository(
             localUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.just(listOf(firstUserEntity, secondUserEntity))
+                onBlocking { retrieveUsers() } doReturn listOf(firstUserEntity, secondUserEntity)
             },
             remoteUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.just(listOf(secondUserEntity, firstUserEntity))
+                onBlocking { retrieveUsers() } doReturn listOf(secondUserEntity, firstUserEntity)
             }
         )
 
-        repository.retrieveUsers()
-            .test()
-            .assertValue(listOf(firstUserEntity, secondUserEntity))
+        repository.retrieveUsers().test {
+            assertEquals(listOf(firstUserEntity, secondUserEntity), awaitItem())
+            awaitComplete()
+        }
     }
 
     @Test
-    fun `given cannot fetch remote data when retrieve users then emit local list and error`() {
-        val error = Throwable("cannot fetch remote data")
+    fun `GIVEN cannot fetch remote data WHEN retrieve users THEN emit local list and error`() = runTest {
+        val errorMessage = "cannot fetch remote data"
         val repository = createRepository(
             localUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.just(listOf(firstUserEntity, secondUserEntity))
+                onBlocking { retrieveUsers() } doReturn listOf(firstUserEntity, secondUserEntity)
             },
             remoteUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.error(error)
+                onBlocking { retrieveUsers() } doThrow RuntimeException(errorMessage)
             }
         )
 
-        repository.retrieveUsers()
-            .test()
-            .assertValue(listOf(firstUserEntity, secondUserEntity))
-            .assertError(error)
+        repository.retrieveUsers().test {
+            assertEquals(listOf(firstUserEntity, secondUserEntity), awaitItem())
+            assertEquals(errorMessage, awaitError().message)
+        }
     }
 
     @Test
-    fun `given cannot fetch local data when retrieve users then emit remote list and error`() {
-        val error = Throwable("cannot fetch local data")
+    fun `GIVEN cannot fetch local data WHEN retrieve users THEN emit and error`() = runTest {
+        val errorMessage = "cannot fetch local data"
         val repository = createRepository(
             localUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.error(error)
+                onBlocking { retrieveUsers() } doThrow RuntimeException(errorMessage)
             },
-            remoteUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.just(listOf(firstUserEntity, secondUserEntity))
-            }
+            remoteUserRepository = mock(),
         )
 
-        repository.retrieveUsers()
-            .test()
-            .assertValue(listOf(firstUserEntity, secondUserEntity))
-            .assertError(error)
+        repository.retrieveUsers().test {
+            assertEquals(errorMessage, awaitError().message)
+        }
     }
 
-    @SuppressLint("CheckResult")
     @Test
-    fun `given can fetch only local data when retrieve users then do not save users`() {
-        val localRepository: LocalRepository = mock {
-            on { retrieveUsers() } doReturn Single.just(listOf(firstUserEntity, secondUserEntity))
+    fun `GIVEN can fetch only local data WHEN retrieve users THEN do not save users`() = runTest {
+        val localRepository: LocalUserRepository = mock {
+            onBlocking { retrieveUsers() } doReturn listOf(firstUserEntity, secondUserEntity)
         }
         val repository = createRepository(
             localUserRepository = localRepository,
             remoteUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.error(Throwable("cannot fetch remote data"))
+                onBlocking { retrieveUsers() } doThrow RuntimeException("cannot fetch remote data")
             }
         )
 
-        repository.retrieveUsers().test()
+        runCatching { repository.retrieveUsers().collect() }
 
         verify(localRepository, never()).insertUsers(any())
         verify(localRepository, never()).insertRepositories(any(), any())
     }
 
-    @SuppressLint("CheckResult")
     @Test
-    fun `given can fetch remote users when retrieve users then insert items to local repository`() {
-        val localRepository: LocalRepository = mock {
-            on { retrieveUsers() } doReturn Single.just(emptyList())
+    fun `GIVEN can fetch remote users WHEN retrieve users THEN insert items to local repository`() = runTest {
+        val localRepository: LocalUserRepository = mock {
+            onBlocking { retrieveUsers() } doReturn emptyList()
         }
         val repository = createRepository(
             localUserRepository = localRepository,
             remoteUserRepository = mock {
-                on { retrieveUsers() } doReturn Single.just(listOf(firstUserEntity, secondUserEntity))
+                onBlocking { retrieveUsers() } doReturn listOf(firstUserEntity, secondUserEntity)
             }
         )
 
-        repository.retrieveUsers().test()
+        repository.retrieveUsers().collect()
 
         verify(localRepository).insertUsers(listOf(firstUserEntity, secondUserEntity))
         verify(localRepository).insertRepositories(firstName, firstRepos)
         verify(localRepository).insertRepositories(secondName, secondRepos)
     }
 
-    private fun createRepository(localUserRepository: LocalRepository, remoteUserRepository: RemoteRepository) =
-        CompositeUserRepository(localUserRepository, remoteUserRepository)
+    private fun createRepository(localUserRepository: LocalUserRepository, remoteUserRepository: RemoteUserRepository) =
+        CompositeUserRepository(
+            localUserRepository = localUserRepository,
+            remoteUserRepository = remoteUserRepository,
+        )
 }
