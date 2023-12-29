@@ -58,16 +58,13 @@ dependencies {
     implementation libs.androidx.appCompat
     implementation libs.androidx.constraintlayout
     implementation libs.androidx.coreKtx
+    implementation libs.androidx.activityKtx
     implementation libs.androidx.recyclerview
     implementation libs.androidx.swiperefreshlayout
 
     implementation libs.hilt.android
     kapt libs.hilt.android.compiler
     kapt libs.hilt.compiler
-
-    implementation libs.rxAndroid
-    implementation libs.rxJava
-    implementation libs.rxKotlin
 
     implementation libs.glide
 

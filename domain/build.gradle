@@ -15,8 +15,7 @@ test {
 }
 
 dependencies {
-    implementation libs.rxJava
-    implementation libs.rxKotlin
+    implementation libs.coroutines.core
 
     compileOnly libs.javax.inject
 

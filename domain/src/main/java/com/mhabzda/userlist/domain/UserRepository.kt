@@ -1,8 +1,8 @@
 package com.mhabzda.userlist.domain
 
 import com.mhabzda.userlist.domain.model.UserEntity
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
 
 interface UserRepository {
-    fun retrieveUsers(): Observable<List<UserEntity>>
+    suspend fun retrieveUsers(): Flow<List<UserEntity>>
 }

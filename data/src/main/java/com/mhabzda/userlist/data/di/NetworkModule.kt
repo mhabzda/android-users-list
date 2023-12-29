@@ -6,15 +6,13 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
-import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
-class NetworkModule {
+internal class NetworkModule {
     @Provides
     fun provideHttpClient(): OkHttpClient {
         val httpClientBuilder = OkHttpClient.Builder()
@@ -37,7 +35,6 @@ class NetworkModule {
     fun provideUserApi(httpClient: OkHttpClient): UserApi =
         Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
             .addConverterFactory(MoshiConverterFactory.create())
             .client(httpClient)
             .build()

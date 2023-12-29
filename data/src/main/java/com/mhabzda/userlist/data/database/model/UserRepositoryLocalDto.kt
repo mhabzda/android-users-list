@@ -1,4 +1,4 @@
-package com.mhabzda.userlist.data.database.dtos
+package com.mhabzda.userlist.data.database.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
@@ -16,7 +16,7 @@ import androidx.room.PrimaryKey
     )],
     indices = [Index("userLogin")]
 )
-data class UserRepositoryLocalDto(
+internal data class UserRepositoryLocalDto(
     @ColumnInfo(name = "userLogin")
     val userLogin: String,
 

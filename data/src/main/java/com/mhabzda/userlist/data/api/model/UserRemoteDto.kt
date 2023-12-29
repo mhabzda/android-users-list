@@ -1,10 +1,10 @@
-package com.mhabzda.userlist.data.api.dtos
+package com.mhabzda.userlist.data.api.model
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class UserRemoteDto(
+internal data class UserRemoteDto(
     @Json(name = "login")
     val login: String,
 

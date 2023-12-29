@@ -35,9 +35,11 @@ android {
 dependencies {
     implementation project(':domain')
 
-    implementation libs.rxAndroid
-    implementation libs.rxJava
-    implementation libs.rxKotlin
+    implementation libs.coroutines.core
+
+    implementation libs.hilt.android
+    kapt libs.hilt.android.compiler
+    kapt libs.hilt.compiler
 
     implementation libs.moshi
     ksp libs.moshi.codegen
@@ -47,14 +49,11 @@ dependencies {
     implementation libs.retrofit.rxJava
 
     implementation libs.androidx.room.runtime
-    implementation libs.androidx.room.rxJava
+    implementation libs.androidx.room.ktx
     kapt libs.androidx.room.compiler
-
-    implementation libs.hilt.android
-    kapt libs.hilt.android.compiler
-    kapt libs.hilt.compiler
 
     testImplementation libs.junit5.api
     testRuntimeOnly libs.junit5.engine
     testImplementation libs.mockito.kotlin
+    testImplementation libs.coroutines.test
 }

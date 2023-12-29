@@ -1,45 +1,26 @@
 package com.mhabzda.userlist.data.api
 
-import com.mhabzda.userlist.data.api.dtos.UserRemoteDto
-import com.mhabzda.userlist.data.api.dtos.UserRepositoryRemoteDto
 import com.mhabzda.userlist.data.api.mapper.UserRemoteMapper
+import com.mhabzda.userlist.data.api.model.UserRepositoryRemoteDto
 import com.mhabzda.userlist.domain.model.UserEntity
-import io.reactivex.Observable
-import io.reactivex.Single
-import io.reactivex.exceptions.CompositeException
-import io.reactivex.rxkotlin.flatMapIterable
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import javax.inject.Inject
 
-class RemoteUserRepository @Inject constructor(
+internal class RemoteUserRepository @Inject constructor(
     private val userApi: UserApi,
     private val userRemoteMapper: UserRemoteMapper,
-) : RemoteRepository {
-    override fun retrieveUsers(): Single<List<UserEntity>> =
-        userApi.fetchUsers()
-            .map { it.take(USERS_NUMBER) }
-            .toObservable()
-            .flatMapIterable()
-            .flatMap(this::mergeUserWithRepositories, true)
-            .flattenCompositeException()
-            .toList()
+) {
 
-    private fun mergeUserWithRepositories(userRemoteDto: UserRemoteDto): Observable<UserEntity> =
-        Observable.zip(
-            Observable.just(userRemoteDto),
-            fetchRepositories(userRemoteDto)
-        ) { user, repositories -> userRemoteMapper.map(user, repositories) }
-
-    private fun fetchRepositories(user: UserRemoteDto): Observable<List<UserRepositoryRemoteDto>> =
-        userApi.fetchUserRepository(user.login)
-            .map { it.take(REPOSITORIES_NUMBER) }
-            .toObservable()
-
-    private fun <T> Observable<T>.flattenCompositeException(): Observable<T> =
-        onErrorResumeNext { originalError: Throwable ->
-            val resultError =
-                if (originalError is CompositeException) originalError.exceptions.first() else originalError
-            Observable.error(resultError)
+    suspend fun retrieveUsers(): List<UserEntity> = coroutineScope {
+        val users = userApi.fetchUsers().take(USERS_NUMBER)
+        val repositoriesJobs = mutableMapOf<String, Deferred<List<UserRepositoryRemoteDto>>>()
+        users.forEach { user ->
+            repositoriesJobs[user.login] = async { userApi.fetchUserRepository(user.login).take(REPOSITORIES_NUMBER) }
         }
+        return@coroutineScope users.map { userRemoteMapper.map(it, repositoriesJobs.getValue(it.login).await()) }
+    }
 
     companion object {
         private const val USERS_NUMBER = 30

@@ -1,26 +1,31 @@
 package com.mhabzda.userlist.data
 
-import com.mhabzda.userlist.data.api.RemoteRepository
-import com.mhabzda.userlist.data.database.LocalRepository
+import com.mhabzda.userlist.data.api.RemoteUserRepository
+import com.mhabzda.userlist.data.database.LocalUserRepository
 import com.mhabzda.userlist.domain.UserRepository
 import com.mhabzda.userlist.domain.model.UserEntity
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
 
-class CompositeUserRepository @Inject constructor(
-    private val localUserRepository: LocalRepository,
-    private val remoteUserRepository: RemoteRepository,
+internal class CompositeUserRepository @Inject constructor(
+    private val localUserRepository: LocalUserRepository,
+    private val remoteUserRepository: RemoteUserRepository,
 ) : UserRepository {
-    override fun retrieveUsers(): Observable<List<UserEntity>> =
-        Observable.mergeDelayError(
-            localUserRepository.retrieveUsers().toObservable().map { UserData.Local(it) },
-            remoteUserRepository.retrieveUsers().toObservable().map { UserData.Remote(it) }
-        ).distinctUntilChanged { localData, remoteData ->
-            localData.users.isContentTheSameAs(remoteData.users)
+
+    override suspend fun retrieveUsers(): Flow<List<UserEntity>> =
+        flow {
+            emit(UserData.Local(localUserRepository.retrieveUsers()))
+            emit(UserData.Remote(remoteUserRepository.retrieveUsers()))
+        }.distinctUntilChanged { localData, remoteData ->
+            remoteData.users.isContentTheSameAs(localData.users)
         }.saveRemoteData().map { it.users }
 
-    private fun Observable<UserData>.saveRemoteData(): Observable<UserData> =
-        doOnNext { userData ->
+    private fun Flow<UserData>.saveRemoteData(): Flow<UserData> =
+        onEach { userData ->
             if (userData is UserData.Remote) {
                 val users = userData.users
                 localUserRepository.insertUsers(users)

@@ -3,21 +3,28 @@ package com.mhabzda.userlist.ui
 import android.os.Bundle
 import android.view.Menu
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.mhabzda.userlist.R
 import com.mhabzda.userlist.databinding.ActivityListBinding
-import com.mhabzda.userlist.domain.model.UserEntity
+import com.mhabzda.userlist.ui.ListContract.ListEffect.ClearSearch
+import com.mhabzda.userlist.ui.ListContract.ListEffect.DisplayError
 import com.mhabzda.userlist.ui.adapter.UsersAdapter
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
-class ListActivity : AppCompatActivity(), ListContract.View {
+class ListActivity : AppCompatActivity() {
 
-    @Inject
-    lateinit var presenter: ListContract.Presenter
+    private val viewModel: ListViewModel by viewModels<ListViewModel>()
 
     private lateinit var binding: ActivityListBinding
     private lateinit var usersAdapter: UsersAdapter
@@ -29,15 +36,28 @@ class ListActivity : AppCompatActivity(), ListContract.View {
         setContentView(binding.root)
 
         initializeList()
-        binding.listSwipeRefresh.setOnRefreshListener { presenter.onRefresh() }
-
-        presenter.onCreate(this)
+        binding.listSwipeRefresh.setOnRefreshListener { viewModel.onRefresh() }
     }
 
     private fun initializeList() = with(binding) {
         usersAdapter = UsersAdapter()
         listUsers.adapter = usersAdapter
         listUsers.addItemDecoration(DividerItemDecoration(this@ListActivity, DividerItemDecoration.VERTICAL))
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        viewModel.state.observeWhenStarted {
+            usersAdapter.users = it.users
+            binding.listSwipeRefresh.isRefreshing = it.isRefreshing
+        }
+        viewModel.effects.observeWhenStarted {
+            when (it) {
+                ClearSearch -> searchView.setQuery("", false)
+                is DisplayError -> Toast.makeText(this, it.errorMessage, Toast.LENGTH_LONG).show()
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -49,27 +69,6 @@ class ListActivity : AppCompatActivity(), ListContract.View {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun displayUsersList(users: List<UserEntity>) {
-        usersAdapter.users = users
-    }
-
-    override fun toggleRefreshing(isRefreshing: Boolean) {
-        binding.listSwipeRefresh.isRefreshing = isRefreshing
-    }
-
-    override fun clearSearch() {
-        searchView.setQuery("", false)
-    }
-
-    override fun displayError(errorMessage: String) {
-        Toast.makeText(this, errorMessage, Toast.LENGTH_LONG).show()
-    }
-
-    override fun onDestroy() {
-        presenter.onClear()
-        super.onDestroy()
-    }
-
     private fun createOnQueryTextListener(): SearchView.OnQueryTextListener =
         object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
@@ -77,8 +76,14 @@ class ListActivity : AppCompatActivity(), ListContract.View {
             }
 
             override fun onQueryTextChange(newText: String): Boolean {
-                presenter.onSearchTextChange(newText)
+                viewModel.onSearchTextChange(newText)
                 return false
             }
         }
+
+    private inline fun <reified T> Flow<T>.observeWhenStarted(
+        noinline action: suspend (T) -> Unit,
+    ): Job = lifecycleScope.launch {
+        flowWithLifecycle(lifecycle, Lifecycle.State.STARTED).collectLatest(action)
+    }
 }
