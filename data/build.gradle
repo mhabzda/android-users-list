@@ -5,6 +5,7 @@ plugins {
     alias libs.plugins.ksp
     alias libs.plugins.junit5.android
     alias libs.plugins.hilt
+    alias libs.plugins.ktlint
 }
 
 apply from: "$rootDir/gradle/githubToken.gradle"

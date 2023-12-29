@@ -8,13 +8,15 @@ import androidx.room.PrimaryKey
 
 @Entity(
     tableName = "userRepositories",
-    foreignKeys = [ForeignKey(
-        entity = UserLocalDto::class,
-        parentColumns = ["login"],
-        childColumns = ["userLogin"],
-        onDelete = ForeignKey.CASCADE
-    )],
-    indices = [Index("userLogin")]
+    foreignKeys = [
+        ForeignKey(
+            entity = UserLocalDto::class,
+            parentColumns = ["login"],
+            childColumns = ["userLogin"],
+            onDelete = ForeignKey.CASCADE,
+        ),
+    ],
+    indices = [Index("userLogin")],
 )
 internal data class UserRepositoryLocalDto(
     @ColumnInfo(name = "userLogin")

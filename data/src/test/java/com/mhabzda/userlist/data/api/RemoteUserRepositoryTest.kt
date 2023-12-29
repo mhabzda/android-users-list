@@ -25,9 +25,11 @@ class RemoteUserRepositoryTest {
     @Test
     fun `GIVEN cannot retrieve user list WHEN retrieving users THEN throw an error`() = runTest {
         val errorMessage = "cannot fetch users"
-        val repository = createRepository(userApi = mock {
-            onBlocking { fetchUsers() } doThrow RuntimeException(errorMessage)
-        })
+        val repository = createRepository(
+            userApi = mock {
+                onBlocking { fetchUsers() } doThrow RuntimeException(errorMessage)
+            },
+        )
 
         val result = runCatching { repository.retrieveUsers() }
 
@@ -47,7 +49,7 @@ class RemoteUserRepositoryTest {
     private fun createRepository(userApi: UserApi) =
         RemoteUserRepository(
             userApi = userApi,
-            userRemoteMapper = UserRemoteMapper()
+            userRemoteMapper = UserRemoteMapper(),
         )
 
     private val firstUserDto = UserRemoteDto("user1", "url")

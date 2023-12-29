@@ -39,7 +39,7 @@ class ListViewModelTest {
             flowOf(
                 emptyList(),
                 listOf(firstTestUserEntity, secondTestUserEntity),
-            )
+            ),
         )
 
         val viewModel = createViewModel()
@@ -60,7 +60,7 @@ class ListViewModelTest {
             flow {
                 emit(emptyList())
                 throw Exception(errorMessage)
-            }
+            },
         )
 
         val viewModel = createViewModel()

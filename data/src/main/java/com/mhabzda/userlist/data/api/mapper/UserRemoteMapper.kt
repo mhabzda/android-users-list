@@ -10,6 +10,6 @@ internal class UserRemoteMapper @Inject constructor() {
         UserEntity(
             name = user.login,
             avatarUrl = user.avatarUrl,
-            repositories = repositoriesList.map { it.name }
+            repositories = repositoriesList.map { it.name },
         )
 }

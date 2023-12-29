@@ -35,7 +35,7 @@ class LocalUserRepositoryTest {
             repositoryDao = mock {
                 onBlocking { getRepositories(firstLogin) } doReturn listOf(firstRepo)
                 onBlocking { getRepositories(secondLogin) } doReturn listOf(secondRepo, thirdRepo)
-            }
+            },
         )
 
         val result = repository.retrieveUsers()
@@ -82,7 +82,7 @@ class LocalUserRepositoryTest {
             repositoryDao = mock {
                 onBlocking { getRepositories(firstLogin) } doReturn listOf(firstRepo)
                 onBlocking { getRepositories(secondLogin) } doThrow RuntimeException(errorMessage)
-            }
+            },
         )
 
         val result = runCatching { repository.retrieveUsers() }

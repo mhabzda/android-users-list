@@ -10,7 +10,7 @@ import com.mhabzda.userlist.data.database.model.UserRepositoryLocalDto
 @Database(
     entities = [UserLocalDto::class, UserRepositoryLocalDto::class],
     version = 2,
-    exportSchema = false
+    exportSchema = false,
 )
 internal abstract class UserDatabase : RoomDatabase() {
     abstract fun userDao(): UserDao

@@ -6,6 +6,7 @@ kotlin = "1.9.22"
 ksp = "1.9.22-1.0.16"
 versions = "0.50.0"
 versions-catalog-update = "0.8.3"
+ktlint = "11.6.1"
 # AndroidX
 androidx-appCompat = "1.6.1"
 androidx-constraintlayout = "2.1.4"
@@ -42,6 +43,7 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 versions = { id = "com.github.ben-manes.versions", version.ref = "versions" }
 versions-catalog-update = { id = "nl.littlerobots.version-catalog-update", version.ref = "versions-catalog-update" }
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 
 [libraries]
 # AndroidX

@@ -10,6 +10,6 @@ internal class UserLocalMapper @Inject constructor() {
         UserEntity(
             name = user.login,
             avatarUrl = user.avatarUrl,
-            repositories = repositories.map { it.name }
+            repositories = repositories.map { it.name },
         )
 }

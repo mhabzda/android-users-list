@@ -30,13 +30,13 @@ internal class LocalUserRepository @Inject constructor(
         userDao.insert(
             *users
                 .map { UserLocalDto(it.name, it.avatarUrl) }
-                .toTypedArray()
+                .toTypedArray(),
         )
 
     suspend fun insertRepositories(userName: String, repositories: List<String>) =
         repositoryDao.insert(
             *repositories
                 .map { UserRepositoryLocalDto(userName, it) }
-                .toTypedArray()
+                .toTypedArray(),
         )
 }

@@ -21,7 +21,7 @@ internal class DatabaseModule {
         Room.databaseBuilder(
             context = applicationContext,
             klass = UserDatabase::class.java,
-            name = DATABASE_NAME
+            name = DATABASE_NAME,
         ).fallbackToDestructiveMigration().build()
 
     @Singleton

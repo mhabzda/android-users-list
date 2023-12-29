@@ -31,7 +31,7 @@ class CompositeUserRepositoryTest {
             },
             remoteUserRepository = mock {
                 onBlocking { retrieveUsers() } doReturn listOf(firstUserEntity, secondUserEntity)
-            }
+            },
         )
 
         repository.retrieveUsers().test {
@@ -49,7 +49,7 @@ class CompositeUserRepositoryTest {
             },
             remoteUserRepository = mock {
                 onBlocking { retrieveUsers() } doReturn listOf(secondUserEntity, firstUserEntity)
-            }
+            },
         )
 
         repository.retrieveUsers().test {
@@ -67,7 +67,7 @@ class CompositeUserRepositoryTest {
             },
             remoteUserRepository = mock {
                 onBlocking { retrieveUsers() } doThrow RuntimeException(errorMessage)
-            }
+            },
         )
 
         repository.retrieveUsers().test {
@@ -100,7 +100,7 @@ class CompositeUserRepositoryTest {
             localUserRepository = localRepository,
             remoteUserRepository = mock {
                 onBlocking { retrieveUsers() } doThrow RuntimeException("cannot fetch remote data")
-            }
+            },
         )
 
         runCatching { repository.retrieveUsers().collect() }
@@ -118,7 +118,7 @@ class CompositeUserRepositoryTest {
             localUserRepository = localRepository,
             remoteUserRepository = mock {
                 onBlocking { retrieveUsers() } doReturn listOf(firstUserEntity, secondUserEntity)
-            }
+            },
         )
 
         repository.retrieveUsers().collect()

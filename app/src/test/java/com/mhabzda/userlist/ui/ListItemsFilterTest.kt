@@ -25,7 +25,7 @@ class ListItemsFilterTest {
                 Input("j", listOf(firstTestUserEntity, secondTestUserEntity), listOf(firstTestUserEntity)),
                 Input("micheal", listOf(firstTestUserEntity, secondTestUserEntity), listOf(secondTestUserEntity)),
                 Input("repo1", listOf(firstTestUserEntity, secondTestUserEntity), listOf(firstTestUserEntity)),
-                Input("scottie", listOf(firstTestUserEntity, secondTestUserEntity), emptyList())
+                Input("scottie", listOf(firstTestUserEntity, secondTestUserEntity), emptyList()),
             )
     }
 
