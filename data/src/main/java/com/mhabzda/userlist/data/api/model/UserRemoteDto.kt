@@ -1,13 +1,13 @@
 package com.mhabzda.userlist.data.api.model
 
-import com.squareup.moshi.Json
-import com.squareup.moshi.JsonClass
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
-@JsonClass(generateAdapter = true)
+@Serializable
 internal data class UserRemoteDto(
-    @Json(name = "login")
+    @SerialName(value = "login")
     val login: String,
 
-    @Json(name = "avatar_url")
+    @SerialName(value = "avatar_url")
     val avatarUrl: String,
 )

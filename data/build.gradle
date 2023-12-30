@@ -2,7 +2,7 @@ plugins {
     alias libs.plugins.android.library
     alias libs.plugins.kotlin.android
     alias libs.plugins.kotlin.kapt
-    alias libs.plugins.ksp
+    alias libs.plugins.kotlin.serialization
     alias libs.plugins.junit5.android
     alias libs.plugins.hilt
     alias libs.plugins.ktlint
@@ -42,11 +42,10 @@ dependencies {
     kapt libs.hilt.android.compiler
     kapt libs.hilt.compiler
 
-    implementation libs.moshi
-    ksp libs.moshi.codegen
+    implementation libs.kotlinx.serialization
     implementation libs.okHttp
     implementation libs.retrofit
-    implementation libs.retrofit.moshi
+    implementation libs.retrofit.kotlinx.serialization
 
     implementation libs.androidx.room.runtime
     implementation libs.androidx.room.ktx
