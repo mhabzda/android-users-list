@@ -73,7 +73,7 @@ fun ListScreen(
 }
 
 @Composable
-fun ListScreen(
+private fun ListScreen(
     viewState: StateFlow<ListViewState>,
     effects: SharedFlow<ListEffect>,
     showSnackbar: suspend (String) -> Unit,
@@ -116,7 +116,7 @@ fun ListScreen(
 }
 
 @Composable
-fun SearchAppBar(
+private fun SearchAppBar(
     onSearchTextChange: (String) -> Unit,
 ) {
     val localFocusManager = LocalFocusManager.current
@@ -214,7 +214,7 @@ private fun ListProgressIndicator(
 @Preview(uiMode = UI_MODE_NIGHT_NO)
 @Preview(uiMode = UI_MODE_NIGHT_YES)
 @Composable
-fun ListScreenPreview() {
+private fun ListScreenPreview() {
     UserListTheme {
         ListScreen(
             viewState = MutableStateFlow(
