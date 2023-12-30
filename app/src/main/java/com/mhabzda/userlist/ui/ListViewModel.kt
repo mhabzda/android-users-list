@@ -9,6 +9,7 @@ import com.mhabzda.userlist.ui.ListContract.ListEffect
 import com.mhabzda.userlist.ui.ListContract.ListEffect.DisplayError
 import com.mhabzda.userlist.ui.ListContract.ListViewState
 import com.mhabzda.userlist.ui.filter.ListItemsFilter
+import com.mhabzda.userlist.utils.SnackbarFlow
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.launch
@@ -18,8 +19,10 @@ import javax.inject.Inject
 class ListViewModel @Inject constructor(
     private val retrieveUsersUseCase: RetrieveUsersUseCase,
     private val listItemsFilter: ListItemsFilter,
+    private val snackbarFlow: SnackbarFlow,
 ) : BaseViewModel<ListViewState, ListEffect>(
     defaultState = ListViewState(),
+    emitSnackbarMessage = snackbarFlow::emit,
 ) {
 
     private val usersListCache: MutableList<UserEntity> = mutableListOf()

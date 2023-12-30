@@ -31,6 +31,11 @@ android {
 
     buildFeatures {
         dataBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     buildTypes {
@@ -56,18 +61,20 @@ dependencies {
     implementation project(':domain')
     implementation project(':data')
 
-    implementation libs.androidx.appCompat
-    implementation libs.androidx.constraintlayout
-    implementation libs.androidx.coreKtx
-    implementation libs.androidx.activityKtx
-    implementation libs.androidx.recyclerview
-    implementation libs.androidx.swiperefreshlayout
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.navigation.compose
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.compose.material3
+    implementation libs.androidx.compose.ui.tooling.preview
+    debugImplementation libs.androidx.compose.ui.tooling
 
+    implementation libs.androidx.hilt.navigation.compose
     implementation libs.hilt.android
     kapt libs.hilt.android.compiler
     kapt libs.hilt.compiler
 
-    implementation libs.glide
+    implementation libs.glide.compose
+    implementation libs.material
 
     testImplementation libs.junit5.api
     testRuntimeOnly libs.junit5.engine
