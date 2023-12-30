@@ -10,7 +10,6 @@ interface ListContract {
     )
 
     sealed class ListEffect {
-        data object ClearSearch : ListEffect()
         data class DisplayError(val errorMessage: String) : ListEffect()
     }
 }

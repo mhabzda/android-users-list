@@ -73,7 +73,7 @@ dependencies {
     kapt libs.hilt.android.compiler
     kapt libs.hilt.compiler
 
-    implementation libs.glide.compose
+    implementation libs.coil.compose
     implementation libs.material
 
     testImplementation libs.junit5.api

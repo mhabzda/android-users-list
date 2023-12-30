@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.mhabzda.userlist.domain.RetrieveUsersUseCase
 import com.mhabzda.userlist.testutils.TestUserData.firstTestUserEntity
 import com.mhabzda.userlist.testutils.TestUserData.secondTestUserEntity
-import com.mhabzda.userlist.ui.ListContract.ListEffect.ClearSearch
 import com.mhabzda.userlist.ui.ListContract.ListEffect.DisplayError
 import com.mhabzda.userlist.ui.ListContract.ListViewState
 import com.mhabzda.userlist.ui.filter.ListItemsFilter
@@ -70,26 +69,6 @@ class ListViewModelTest {
             assertEquals(DisplayError(errorMessage), awaitItem())
         }
         assertEquals(ListViewState(users = emptyList(), isRefreshing = false), viewModel.state.value)
-    }
-
-    @Test
-    fun `GIVEN users change WHEN refreshing THEN display new users and clear search`() = runTest {
-        givenBlocking { mockRetrieveUsersUseCase.invoke() }.willReturn(
-            flowOf(emptyList(), listOf(firstTestUserEntity, secondTestUserEntity)),
-        )
-        val viewModel = createViewModel()
-        testDispatcher.scheduler.runCurrent()
-
-        givenBlocking { mockRetrieveUsersUseCase.invoke() }.willReturn(
-            flowOf(emptyList(), listOf(firstTestUserEntity)),
-        )
-        viewModel.onRefresh()
-
-        viewModel.effects.test {
-            testDispatcher.scheduler.runCurrent()
-            assertEquals(ClearSearch, awaitItem())
-        }
-        assertEquals(ListViewState(users = listOf(firstTestUserEntity), isRefreshing = false), viewModel.state.value)
     }
 
     @Test

@@ -10,13 +10,14 @@ import com.mhabzda.userlist.ui.ListScreen
 @Composable
 fun UserListNavHost(
     navController: NavHostController = rememberNavController(),
+    showSnackbar: suspend (String) -> Unit,
 ) {
     NavHost(
         navController = navController,
         startDestination = "list",
     ) {
         composable(route = "list") {
-            ListScreen()
+            ListScreen(showSnackbar = showSnackbar)
         }
     }
 }

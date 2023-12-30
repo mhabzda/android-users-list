@@ -10,7 +10,6 @@ import kotlinx.coroutines.launch
 
 abstract class BaseViewModel<State, Effect>(
     defaultState: State,
-    private val emitSnackbarMessage: suspend (String) -> Unit = {},
 ) : ViewModel() {
     private val stateFlow = MutableStateFlow(defaultState)
     val state = stateFlow.asStateFlow()
@@ -24,9 +23,5 @@ abstract class BaseViewModel<State, Effect>(
 
     protected fun emit(effect: Effect) = viewModelScope.launch {
         effectsFlow.emit(effect)
-    }
-
-    suspend fun showSnackbar(message: String) {
-        emitSnackbarMessage(message)
     }
 }
