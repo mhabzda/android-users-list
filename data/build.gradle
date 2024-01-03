@@ -1,0 +1,59 @@
+plugins {
+    alias libs.plugins.android.library
+    alias libs.plugins.kotlin.android
+    alias libs.plugins.kotlin.kapt
+    alias libs.plugins.kotlin.serialization
+    alias libs.plugins.junit5.android
+    alias libs.plugins.hilt
+    alias libs.plugins.ktlint
+}
+
+apply from: "$rootDir/gradle/github_token.gradle"
+apply from: "$rootDir/gradle/config.gradle"
+
+kotlin {
+    jvmToolchain config.jvmToolchain
+}
+
+android {
+    namespace 'com.mhabzda.userlist.data'
+    compileSdk config.compileSdkVersion
+
+    defaultConfig {
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
+
+        buildConfigField("String", "GITHUB_TOKEN", getGithubToken("$rootDir"))
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+}
+
+dependencies {
+    implementation project(':domain')
+
+    implementation libs.coroutines.core
+
+    implementation libs.hilt.android
+    kapt libs.hilt.android.compiler
+    kapt libs.hilt.compiler
+
+    implementation libs.kotlinx.serialization
+    implementation libs.okHttp
+    implementation libs.retrofit
+    implementation libs.retrofit.kotlinx.serialization
+
+    implementation libs.androidx.room.runtime
+    implementation libs.androidx.room.ktx
+    kapt libs.androidx.room.compiler
+
+    testImplementation libs.junit5.api
+    testRuntimeOnly libs.junit5.engine
+    testImplementation libs.mockito.kotlin
+    testImplementation libs.coroutines.test
+    testImplementation libs.turbine
+}

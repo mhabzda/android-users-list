@@ -3,36 +3,38 @@ plugins {
     alias libs.plugins.junit5.android
     alias libs.plugins.kotlin.android
     alias libs.plugins.kotlin.kapt
+    alias libs.plugins.hilt
+    alias libs.plugins.ktlint
 }
 
-apply from: "../gradle/githubToken.gradle"
+apply from: "$rootDir/gradle/config.gradle"
+
+kotlin {
+    jvmToolchain config.jvmToolchain
+}
 
 android {
-    compileSdkVersion 31
+    namespace 'com.mhabzda.userlist'
+
+    compileSdk config.compileSdkVersion
 
     defaultConfig {
-        applicationId "com.users"
-        minSdkVersion 23
-        targetSdkVersion 31
+        applicationId "com.mhabzda.userlist"
+        minSdkVersion config.minSdkVersion
+        targetSdkVersion config.targetSdkVersion
         versionCode 1
         versionName "1.0"
-
-        buildConfigField("String", "GITHUB_TOKEN", getGithubToken("$rootDir"))
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_11
-        targetCompatibility JavaVersion.VERSION_11
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_11.toString()
-    }
-
     buildFeatures {
         dataBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 
     buildTypes {
@@ -44,7 +46,8 @@ android {
         release {
             debuggable false
             minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            proguardFiles 'proguard-rules.pro'
+            signingConfig signingConfigs.debug
         }
     }
 
@@ -54,36 +57,28 @@ android {
 }
 
 dependencies {
-    implementation libs.androidx.appCompat
-    implementation libs.androidx.constraintlayout
-    implementation libs.androidx.coreKtx
-    implementation libs.androidx.recyclerview
-    kapt libs.androidx.room.compiler
-    implementation libs.androidx.room.runtime
-    implementation libs.androidx.room.rxJava
-    implementation libs.androidx.swiperefreshlayout
+    implementation project(':domain')
+    implementation project(':data')
 
-    implementation libs.dagger
-    implementation libs.dagger.android
-    kapt libs.dagger.compiler
-    kapt libs.dagger.processor
-    implementation libs.dagger.support
+    implementation libs.androidx.activity.compose
+    implementation libs.androidx.navigation.compose
+    implementation platform(libs.androidx.compose.bom)
+    implementation libs.androidx.compose.material3
+    implementation libs.androidx.compose.ui.tooling.preview
+    debugImplementation libs.androidx.compose.ui.tooling
 
-    implementation libs.rxAndroid
-    implementation libs.rxJava
-    implementation libs.rxKotlin
+    implementation libs.androidx.hilt.navigation.compose
+    implementation libs.hilt.android
+    kapt libs.hilt.android.compiler
+    kapt libs.hilt.compiler
 
-    implementation libs.moshi
-    kapt libs.moshi.codegen
-    implementation libs.okHttp
-    implementation libs.retrofit
-    implementation libs.retrofit.moshi
-    implementation libs.retrofit.rxJava
-
-    implementation libs.glide
+    implementation libs.coil.compose
+    implementation libs.material
 
     testImplementation libs.junit5.api
     testRuntimeOnly libs.junit5.engine
     testImplementation libs.junit5.params
     testImplementation libs.mockito.kotlin
+    testImplementation libs.coroutines.test
+    testImplementation libs.turbine
 }

@@ -16,5 +16,5 @@ dependencyResolutionManagement {
 
 rootProject.name = 'android-users-list'
 include ':app'
-
-enableFeaturePreview("VERSION_CATALOGS")
+include ':domain'
+include ':data'
