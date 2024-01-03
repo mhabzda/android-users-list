@@ -11,6 +11,12 @@ The app fetches the whole list with this restriction, but only once. After that,
 If there is a need to work with the app without such a low limit the `github_token.txt` file can be placed in the root directory.
 Inside, a [Github token](https://github.com/settings/tokens) needs to be provided.
 
+### Demo
+
+<div align="center">
+  <video src="https://github.com/mhabzda/android-users-list/assets/26122834/5e3e2ecb-36a2-4a6b-88fa-cf7ba9db7124" width="400" />
+</div>
+
 ### Architecture
 
 Clean Architecture has been used in the project. There are multiple Gradle modules containing
