@@ -14,7 +14,7 @@ Inside, a [Github token](https://github.com/settings/tokens) needs to be provide
 ### Demo
 
 <div align="center">
-  <video src="https://github.com/mhabzda/android-users-list/assets/26122834/5e3e2ecb-36a2-4a6b-88fa-cf7ba9db7124" width="400" />
+  <video src="https://github.com/mhabzda/android-users-list/assets/26122834/31f32a3d-cbc5-48da-a91c-83b4a280a23a" width="400" />
 </div>
 
 ### Architecture
